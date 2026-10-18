@@ -331,6 +331,20 @@ def main():
   .mini-table th {{ position: sticky; top: 0; background: var(--chip-bg); z-index: 1; }}
   .mini-table th, .mini-table td {{ font-size: 11.5px; padding: 5px 8px; text-align: center; border-bottom: 1px solid var(--border); white-space: nowrap; }}
   .mini-table tr.is-mine {{ background: var(--accent-bg); font-weight: 700; }}
+
+  .guide {{ background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+            padding: 16px 18px; margin-bottom: 18px; }}
+  .guide summary {{ font-size: 15px; font-weight: 700; color: var(--ink); list-style: none; cursor: pointer; }}
+  .guide summary::-webkit-details-marker {{ display: none; }}
+  .guide summary::before {{ content: "▸ "; color: var(--accent-ink); }}
+  .guide[open] summary::before {{ content: "▾ "; }}
+  .guide-body {{ margin-top: 14px; font-size: 13px; line-height: 1.75; color: var(--ink); }}
+  .guide-body h3 {{ font-size: 13.5px; margin: 16px 0 6px; color: var(--ink); }}
+  .guide-body h3:first-child {{ margin-top: 0; }}
+  .guide-body ul {{ margin: 4px 0; padding-left: 20px; }}
+  .guide-body li {{ margin: 3px 0; }}
+  .guide-note {{ margin-top: 14px; padding: 10px 12px; background: var(--warn-bg); color: var(--warn);
+                 border-radius: 8px; font-size: 12.5px; line-height: 1.6; }}
 </style>
 </head>
 <body>
@@ -341,6 +355,48 @@ def main():
     레이팅(백분위+추세) + 러닝스타일(선행+추입) 조합점수, 동등가중 · 백테스트 검증 완료
     (Spearman -0.3175, 경주단위 1위픽 승률 2.03배 — 단 6~8두 소규모 경주는 표본 부족으로 추가 검증 필요)
   </div>
+
+  <details class="guide" open>
+    <summary>이 화면은 무엇이고, 어떻게 보는 건가요? (처음이면 읽어보세요)</summary>
+    <div class="guide-body">
+      <h3>무엇을 하는 화면인가요?</h3>
+      <p>11조(손병철 조교사) 소속마들을 <b>데이터로 분석해서 지금 어떤 말 상태가 좋은지</b> 보여주는 도구입니다.
+      감이 아니라 과거 1년치 실제 경주 결과를 통계적으로 검증한 방식을 씁니다. 매일 자동으로 최신 데이터로 갱신됩니다.</p>
+
+      <h3>최종점수는 어떻게 나온 건가요?</h3>
+      <p>아래 4가지를 동일한 비중으로 합쳐서 계산합니다 (점수가 높을수록 "지금 상태가 좋다"는 뜻 — 100점 만점이 아니라 상대적 순위입니다):</p>
+      <ul>
+        <li><b>등급내백분위</b> — 이 말의 레이팅이, 같은 등급·거리·주로상태에서 뛴 다른 마방 말들과 비교해 상위 몇 %인지</li>
+        <li><b>레이팅추세</b> — 직전 경주보다 가장 최근 경주 레이팅이 올랐는지(+)/내렸는지(-)</li>
+        <li><b>선행성향</b> — 경주 초반에 앞서 나가는 경향 (%가 높을수록 선행형)</li>
+        <li><b>추입성향</b> — 경주 후반에 순위를 끌어올리는 경향 (양수면 추입/뒷심형)</li>
+      </ul>
+
+      <h3>이거 믿을 만한가요?</h3>
+      <p>과거 1년치(710개 경주, 7,800여 출전기록)로 검증했습니다. <b>이 점수로 1등을 뽑았을 때, 무작위로 찍었을 때보다 약 2배 더 자주 실제로 우승</b>했습니다
+      (367개 경주 테스트, 승률 21.3% vs 무작위 10.5%). 다만 6~8두짜리 소규모 경주는 아직 표본이 적어 추가 검증이 필요합니다.</p>
+
+      <h3>배지는 무슨 뜻인가요?</h3>
+      <ul>
+        <li><span class="badge badge-ok">적정</span> 출주간격이 딱 좋은 시기(28~42일, 과거 데이터로 확인된 최적 구간)</li>
+        <li><span class="badge badge-warn">⚠ 간격주의</span> 너무 급하게(21일 미만) 또는 너무 오래 쉬고(60일 초과) 나가는 경우</li>
+        <li><b>최적거리 배지</b> — 이 말이 지금 등급에서 가장 성적이 좋았던 거리 (비교 가능한 거리가 1개뿐이면 "판단 보류 권장"이라고 표시됨)</li>
+        <li><span class="badge badge-ic">양면형</span> — 선행으로도, 추입으로도 둘 다 3착 이내 성공한 적 있는 말</li>
+        <li><span class="badge badge-ic-win">교류 N전 M승</span> — 서울/제주/영천 등 원정 경주 전적 (참고용, 점수엔 미반영)</li>
+      </ul>
+
+      <h3>카드를 펼치면 뭐가 나오나요?</h3>
+      <p>각 말 카드 아래 <b>"거리별 성적"</b>을 펼치면 이 말이 뛰어본 모든 거리·등급에서의 성적을,
+      <b>"상대마 비교"</b>를 펼치면 같은 등급·거리·주로상태 조건의 다른 마방 말들과 나란히 순위를 비교해서 볼 수 있습니다
+      (★ 표시 = 우리 말).</p>
+
+      <div class="guide-note">
+        ⚠ <b>이 점수는 참고자료입니다.</b> 실제 출마등록(경주 신청)은 조교사가 직접 판단해서 하는 것이고,
+        컨디션·부상 여부처럼 데이터에 안 잡히는 부분은 이 도구가 알 수 없습니다. 레이팅이 아직 없는 신마는
+        점수가 안 나와서 맨 아래 별도 표에 나옵니다.
+      </div>
+    </div>
+  </details>
 
   <div class="cards-grid">
     {scored_cards}
