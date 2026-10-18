@@ -54,7 +54,8 @@ def rating_trend(history: pd.DataFrame) -> dict:
     """순(1=최신)이 작을수록 최근 경주. 레이팅 있는 행만으로 추세 판단."""
     h = history.dropna(subset=["레이팅"]).copy()
     h["레이팅"] = pd.to_numeric(h["레이팅"], errors="coerce")
-    h = h.dropna(subset=["레이팅"]).sort_values("순")  # 순=1이 가장 최근
+    # "순"은 문자열 컬럼이라 기본 정렬은 사전식("11" < "2")이 됨 — 반드시 숫자로 변환해서 정렬.
+    h = h.dropna(subset=["레이팅"]).sort_values("순", key=lambda s: pd.to_numeric(s, errors="coerce"))  # 순=1이 가장 최근
     if len(h) == 0:
         return {"최근레이팅": None, "직전레이팅": None, "추세": "레이팅 없음(신마)"}
     latest = h.iloc[0]["레이팅"]
@@ -69,7 +70,7 @@ def rating_trend(history: pd.DataFrame) -> dict:
 def race_interval(history: pd.DataFrame) -> dict:
     h = history.copy()
     h["경주일자_dt"] = h["경주일자"].apply(_parse_date)
-    h = h.dropna(subset=["경주일자_dt"]).sort_values("순")
+    h = h.dropna(subset=["경주일자_dt"]).sort_values("순", key=lambda s: pd.to_numeric(s, errors="coerce"))
     if len(h) == 0:
         return {"최근출전일": None, "경과일": None, "평균출주간격": None}
     last_date = h.iloc[0]["경주일자_dt"]
@@ -148,10 +149,20 @@ def class_percentile(history: pd.DataFrame, population: pd.DataFrame, current_ra
     KRA는 경주 없이도 주기적으로 레이팅을 재산정하므로 소속마 목록 쪽이 더 최신이다."""
     h = history.copy()
     h["경주일자_dt"] = h["경주일자"].apply(_parse_date)
-    h = h.dropna(subset=["경주일자_dt", "등급"]).sort_values("순")
+    h = h.dropna(subset=["경주일자_dt", "등급"]).sort_values("순", key=lambda s: pd.to_numeric(s, errors="coerce"))
     if len(h) == 0 or pd.isna(current_rating):
         return {"최근출전등급": None, "최근출전거리": None, "최근주로상태": None,
                 "등급내백분위": None, "비교모집단수": 0}
+
+    # population(모집단)은 부산경남(meet=3) 데이터로만 구성되므로, 비교 기준이 되는
+    # 등급/거리/주로도 반드시 부산경남 내 최근 경주에서 뽑아야 한다 — 그렇지 않으면 말의
+    # '전체 최근 경주'가 서울/제주 교류경주일 때 모집단 매칭 기준 자체가 어긋난다
+    # (2026-10-18 발견: 판타스틱밸류가 서울 교류경주 등급으로 매칭되어 실제 부산경남
+    # 성적과 다른 조건으로 비교되고 있었음).
+    if "교류경주" in h.columns:
+        home_only = h[h["교류경주"] != "Y"]
+        if len(home_only) > 0:
+            h = home_only
 
     recent_grade = h.iloc[0]["등급"]
     recent_distance = _distance_num(h.iloc[0]["거리"])

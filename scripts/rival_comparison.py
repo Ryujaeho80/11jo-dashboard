@@ -45,9 +45,19 @@ def main():
             continue
         hist_sorted = hist.copy()
         hist_sorted["경주일자_dt"] = hist_sorted["경주일자"].apply(_parse_date)
-        hist_sorted = hist_sorted.dropna(subset=["경주일자_dt"]).sort_values("순")
+        hist_sorted = hist_sorted.dropna(subset=["경주일자_dt"]).sort_values(
+            "순", key=lambda s: pd.to_numeric(s, errors="coerce"))
         if len(hist_sorted) == 0:
             continue
+
+        # 모집단(latest_pop)은 부산경남(meet=3) 데이터로만 만들어지므로, 비교 기준이 되는
+        # '내 등급/거리/주로'도 반드시 부산경남 내 최근 경주에서 뽑아야 한다. 안 그러면
+        # 말의 '전체 최근 경주'가 서울/제주 교류경주일 때 그 말이 자기 모집단에서 빠지는
+        # 버그가 생김(2026-10-18 발견: 판타스틱밸류가 서울 교류경주 등급 기준으로 조회되어
+        # 정작 부산경남 모집단엔 다른 등급으로 들어가있어 본인이 검색 안 됨).
+        home_only = hist_sorted[hist_sorted["교류경주"] != "Y"]
+        if len(home_only) > 0:
+            hist_sorted = home_only
 
         my_grade = hist_sorted.iloc[0]["등급"]
         my_distance = _distance_num(hist_sorted.iloc[0]["거리"])

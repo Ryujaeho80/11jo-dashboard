@@ -10,11 +10,19 @@
 Windows 작업 스케줄러 등록 예시:
     schtasks /create /tn "경주마_데이터_일일수집" /tr "python C:\\...\\scripts\\daily_update.py" /sc daily /st 06:00
 """
+import os
 import shutil
 import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
+
+# Windows 작업 스케줄러처럼 콘솔이 없는 환경에서 실행하면 stdout 인코딩이 cp949로 잡혀
+# 한글 print()가 UnicodeEncodeError로 죽는다. 부모 프로세스 자신과, run_step()이 띄우는
+# 자식 파이썬 프로세스들(각자 내부에서 한글을 print함) 양쪽 다 utf-8로 강제한다.
+sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+CHILD_ENV = {**os.environ, "PYTHONIOENCODING": "utf-8"}
 
 LOG_PATH = Path("data/processed/daily_update_log.txt")
 TRAINER_NO = "070302"  # 손병철
@@ -26,7 +34,7 @@ DASHBOARD_PUBLISH = Path("index.html")  # GitHub Pages 루트 배포용
 def run_step(name: str, cmd: list[str]) -> bool:
     print(f"\n{'='*50}\n[{name}] 시작\n{'='*50}", flush=True)
     result = subprocess.run([sys.executable, *cmd], capture_output=True, text=True,
-                             encoding="utf-8", errors="replace")
+                             encoding="utf-8", errors="replace", env=CHILD_ENV)
     ok = result.returncode == 0
     status = "성공" if ok else "실패"
     print(f"[{name}] {status} (exit={result.returncode})", flush=True)

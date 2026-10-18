@@ -268,7 +268,7 @@ def main():
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>손병철 11조 출마등록 분석 대시보드</title>
+<title>11조 대시보드</title>
 <style>
   :root {{
     --bg: #f6f8fa; --surface: #fff; --ink: #1f2328; --ink-muted: #656d76;
@@ -335,7 +335,7 @@ def main():
 </head>
 <body>
 <div class="wrap">
-  <h1>손병철 11조 출마등록 분석 대시보드</h1>
+  <h1>11조 대시보드</h1>
   <div class="meta">
     생성 시각: {datetime.now():%Y-%m-%d %H:%M}<br>
     레이팅(백분위+추세) + 러닝스타일(선행+추입) 조합점수, 동등가중 · 백테스트 검증 완료
