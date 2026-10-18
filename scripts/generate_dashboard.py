@@ -302,7 +302,7 @@ def main():
   .rank {{ flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%; background: var(--chip-bg); color: var(--chip-ink);
            display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }}
   .card-title {{ flex: 1 1 auto; min-width: 0; }}
-  .hname {{ font-weight: 700; font-size: 15px; }}
+  .hname {{ font-weight: 800; font-size: 19px; color: var(--ink); letter-spacing: -0.2px; }}
   .sub {{ font-size: 11.5px; color: var(--ink-muted); margin-top: 1px; }}
   .reason {{ color: var(--ink-muted); }}
   .attention {{ color: var(--warn); font-size: 11.5px; font-weight: 600; margin-top: 4px; }}
