@@ -63,6 +63,16 @@ def versatility_badge(insight) -> str:
     return f'<span class="badge badge-ic">양면형(선행{f}·추입{c})</span>'
 
 
+def prior_trainer_badge(insight) -> str:
+    if insight is None or pd.isna(insight.get("이전소속조교사")):
+        return ""
+    prev = ihtml.escape(str(insight["이전소속조교사"]))
+    date_raw = str(insight.get("이전소속최근경주일", ""))
+    date_txt = f"{date_raw[:4]}.{date_raw[4:6]}" if len(date_raw) >= 6 else ""
+    title = f"손병철 데뷔(2026-07-01) 이전, {date_txt}까지 {prev} 마방 소속이었음"
+    return f'<span class="badge badge-mid" title="{ihtml.escape(title)}">이전: {prev}({date_txt})</span>'
+
+
 def attention_box(insight) -> str:
     if insight is None:
         return ""
@@ -179,6 +189,7 @@ def render_scored_card(rank: int, r: pd.Series, insight, rivals: pd.DataFrame, d
         versatility_badge(insight),
         interval_flag(r["경과일"]),
         interchange_badge(r.get("교류경주참가"), r.get("교류경주우승")),
+        prior_trainer_badge(insight),
     ]))
 
     stats = "".join([
@@ -218,6 +229,7 @@ def render_unscored_card(r: pd.Series, insight, distances: pd.DataFrame) -> str:
         versatility_badge(insight),
         interval_flag(r["경과일"]),
         interchange_badge(r.get("교류경주참가"), r.get("교류경주우승")),
+        prior_trainer_badge(insight),
     ]))
 
     stats = "".join([
@@ -383,6 +395,7 @@ def main():
         <li><b>최적거리 배지</b> — 이 말이 지금 등급에서 가장 성적이 좋았던 거리 (비교 가능한 거리가 1개뿐이면 "판단 보류 권장"이라고 표시됨)</li>
         <li><span class="badge badge-ic">양면형</span> — 선행으로도, 추입으로도 둘 다 3착 이내 성공한 적 있는 말</li>
         <li><span class="badge badge-ic-win">교류 N전 M승</span> — 서울/제주/영천 등 원정 경주 전적 (참고용, 점수엔 미반영)</li>
+        <li><span class="badge badge-mid">이전: 조교사명(날짜)</span> — 손병철 조교사 데뷔(2026-07-01) 이전 마지막으로 소속됐던 조교사. 대부분 "임금만"으로 나오는 건 데뷔 당시 마방을 인수받은 흔적(정상)</li>
       </ul>
 
       <h3>카드를 펼치면 뭐가 나오나요?</h3>

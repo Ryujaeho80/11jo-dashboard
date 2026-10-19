@@ -10,6 +10,9 @@
    후방에서 치고 올라와 좋은 성적을 낸 적도 있는 말. 둘 중 하나만 되는 말과 구분된다.
 3. 신경써야 할 점 — 레이팅 하락세, 출주간격 부적정, 현재등급 하위권, 러닝스타일 판단
    표본부족 등을 한 번에 모아서 보여줌. 전부 이미 계산된 값의 조합일 뿐 새 지표 아님.
+4. 조 이동 이력 — race_field_3.csv(조교사명 포함)에서 손병철이 아닌 조교사로 뛴 가장
+   최근 기록을 찾아 "이전 소속"으로 표시. 손병철 데뷔일(2026-07-01) 이전 기록이 대부분이라
+   버그가 아니라 조 인수/이동의 정상 흔적 — 2026-10-19 사용자 확인 질문으로 추가된 기능.
 
 사용법:
     python scripts/horse_insights.py
@@ -23,6 +26,7 @@ DISTANCE_CSV = "data/processed/distance_breakdown.csv"
 SCORE_CSV = "data/processed/final_entry_score.csv"
 FIELD_CSV = "data/raw/race_results/race_field_3.csv"
 OUT_CSV = "data/processed/horse_insights.csv"
+HOME_TRAINER = "손병철"
 
 FRONT_THRESHOLD = 0.6   # 초반백분위 이 이상이면 '선행 시도'
 CLOSER_EARLY_MAX = 0.4  # 초반백분위 이 이하이면서
@@ -59,6 +63,16 @@ def style_versatility(my_races: pd.DataFrame) -> dict:
         "양면형": len(front_success) > 0 and len(closer_success) > 0,
         "선행성공": len(front_success), "추입성공": len(closer_success), "분석경주수": len(races),
     }
+
+
+def prior_trainer(my_races: pd.DataFrame) -> dict:
+    """현재 마방(HOME_TRAINER) 소속이 되기 전, 가장 최근에 다른 조교사 밑에서 뛴 기록을 찾는다.
+    부산경남(meet=3) 기록만 보는 race_field_3.csv 기준 — 교류경주(타 경마장)는 포함 안 됨."""
+    others = my_races[my_races["조교사명"] != HOME_TRAINER].dropna(subset=["경주일자"])
+    if len(others) == 0:
+        return {"이전소속조교사": None, "이전소속최근경주일": None}
+    latest = others.sort_values("경주일자").iloc[-1]
+    return {"이전소속조교사": latest["조교사명"], "이전소속최근경주일": latest["경주일자"]}
 
 
 def attention_flags(row: dict, versatility: dict) -> list[str]:
@@ -105,10 +119,12 @@ def main():
 
         my_races = field[field["마호_hrNo"] == hr_no]
         vers = style_versatility(my_races)
+        prior = prior_trainer(my_races)
 
         row = {"마번": hr_no, "마명": hr_name, "현재등급": current_grade, **opt,
                "양면형": vers["양면형"], "선행성공횟수": vers["선행성공"],
-               "추입성공횟수": vers["추입성공"], "러닝스타일분석경주수": vers["분석경주수"]}
+               "추입성공횟수": vers["추입성공"], "러닝스타일분석경주수": vers["분석경주수"],
+               **prior}
 
         score_dict = score_row.iloc[0].to_dict() if len(score_row) > 0 else {}
         flags = attention_flags(score_dict, vers)
@@ -122,6 +138,8 @@ def main():
     print(f"양면형(선행+추입 둘 다 성공 이력): {result['양면형'].sum()}두")
     has_flags = (result["신경써야할점"] != "").sum()
     print(f"주의사항 있는 말: {has_flags}두")
+    has_prior = result["이전소속조교사"].notna().sum()
+    print(f"조 이동 이력 있는 말: {has_prior}두")
 
 
 if __name__ == "__main__":
