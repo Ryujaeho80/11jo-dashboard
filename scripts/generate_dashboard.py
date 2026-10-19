@@ -29,6 +29,7 @@ OUT_HTML = Path("data/dashboard.html")
 CHART_COLOR_OURS = "#2a78d6"
 CHART_COLOR_POP = "#eb6834"
 HOME_TRAINER = "손병철"
+HOME_LABEL = "11조"
 
 
 def month_label(ym: str) -> str:
@@ -58,9 +59,9 @@ def compute_trainer_trend():
     return months, sb, allp
 
 
-def build_trend_svg(months, ours_vals, pop_vals, ours_n, title) -> str:
-    w, h = 460, 190
-    pad_l, pad_r, pad_t, pad_b = 34, 52, 14, 26
+def build_trend_svg(months, ours_vals, pop_vals, ours_n, pop_n, title) -> str:
+    w, h = 520, 190
+    pad_l, pad_r, pad_t, pad_b = 34, 100, 14, 26
     plot_w, plot_h = w - pad_l - pad_r, h - pad_t - pad_b
 
     all_vals = [v for v in ours_vals + pop_vals if v is not None]
@@ -73,7 +74,7 @@ def build_trend_svg(months, ours_vals, pop_vals, ours_n, title) -> str:
     def y_of(v):
         return pad_t + plot_h - ((v - y_min) / (y_max - y_min)) * plot_h
 
-    def make_line(vals, color, labels=None):
+    def make_line(vals, color, series_label, counts):
         pts = [(i, v) for i, v in enumerate(vals) if v is not None]
         if len(pts) == 0:
             return ""
@@ -81,11 +82,11 @@ def build_trend_svg(months, ours_vals, pop_vals, ours_n, title) -> str:
         line = f'<path d="{path}" fill="none" stroke="{color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'
         dots = ""
         for xi, v in pts:
-            tip = f"{month_label(months[xi])}: {v:.1f}%"
-            if labels is not None:
-                tip += f" ({labels[xi]}건)"
-            dots += (f'<circle cx="{x_of(xi):.1f}" cy="{y_of(v):.1f}" r="4" fill="{color}">'
-                     f'<title>{ihtml.escape(tip)}</title></circle>')
+            n = counts[xi] if counts is not None and counts[xi] is not None else "?"
+            tip = f"{series_label} {month_label(months[xi])}: {v:.1f}% ({n}건)"
+            dots += (f'<circle class="cdot" cx="{x_of(xi):.1f}" cy="{y_of(v):.1f}" r="7" fill="{color}" '
+                     f'fill-opacity="0" stroke="none" tabindex="0" data-tip="{ihtml.escape(tip)}"></circle>'
+                     f'<circle cx="{x_of(xi):.1f}" cy="{y_of(v):.1f}" r="4" fill="{color}" pointer-events="none"></circle>')
         return line + dots
 
     gridlines = ""
@@ -103,8 +104,8 @@ def build_trend_svg(months, ours_vals, pop_vals, ours_n, title) -> str:
         for i, m in enumerate(months)
     )
 
-    ours_line = make_line(ours_vals, CHART_COLOR_OURS, ours_n)
-    pop_line = make_line(pop_vals, CHART_COLOR_POP)
+    ours_line = make_line(ours_vals, CHART_COLOR_OURS, HOME_LABEL, ours_n)
+    pop_line = make_line(pop_vals, CHART_COLOR_POP, "전체평균", pop_n)
 
     # 마지막 유효점 옆에 직접 라벨(범례 대신) — 두 라벨이 겹치지 않게 y좌표를 함께 계산
     def last_point(vals):
@@ -126,12 +127,13 @@ def build_trend_svg(months, ours_vals, pop_vals, ours_n, title) -> str:
     def end_label(last, color, text, label_y):
         if last is None:
             return ""
-        i, _ = last
+        i, v = last
         x = x_of(i) + 8
         y = max(pad_t + 8, min(h - pad_b - 2, label_y))
-        return f'<text x="{x:.1f}" y="{y:.1f}" font-size="10.5" font-weight="700" fill="{color}">{text}</text>'
+        return (f'<text x="{x:.1f}" y="{y:.1f}" font-size="10.5" font-weight="700" fill="{color}">'
+                f'{ihtml.escape(text)} {v:.1f}%</text>')
 
-    labels = end_label(ours_last, CHART_COLOR_OURS, "손병철", (ours_label_y or 0) + 3) + \
+    labels = end_label(ours_last, CHART_COLOR_OURS, HOME_LABEL, (ours_label_y or 0) + 3) + \
         end_label(pop_last, CHART_COLOR_POP, "전체평균", (pop_label_y or 0) + 3)
 
     return f"""
@@ -156,20 +158,21 @@ def render_trend_section() -> str:
     sb_n = [int(sb.loc[m, "출주"]) if m in sb.index else None for m in months]
     all_win = [allp.loc[m, "승률"] if m in allp.index else None for m in months]
     all_place = [allp.loc[m, "복승률"] if m in allp.index else None for m in months]
+    all_n = [int(allp.loc[m, "출주"]) if m in allp.index else None for m in months]
 
-    win_chart = build_trend_svg(months, sb_win, all_win, sb_n, "승률 추이 (%)")
-    place_chart = build_trend_svg(months, sb_place, all_place, sb_n, "복승률(3착 이내) 추이 (%)")
+    win_chart = build_trend_svg(months, sb_win, all_win, sb_n, all_n, "승률 추이 (%)")
+    place_chart = build_trend_svg(months, sb_place, all_place, sb_n, all_n, "복승률(3착 이내) 추이 (%)")
 
     return f"""
-  <h2>11조(손병철) 개업 이후 성적 추이 — 전체 조교사 평균과 비교</h2>
+  <h2>{HOME_LABEL}({HOME_TRAINER}) 개업 이후 성적 추이 — 전체 조교사 평균과 비교</h2>
   <div class="trend-grid">
     {win_chart}
     {place_chart}
   </div>
   <div class="legend">
-    ※ 손병철 조교사 데뷔일(2026-07-01) 이후 월별 집계. "전체평균"은 그 달 부산경남에서 뛴
+    ※ {HOME_TRAINER} 조교사 데뷔일(2026-07-01) 이후 월별 집계. "전체평균"은 그 달 부산경남에서 뛴
     모든 말(방문마 제외)을 통째로 풀링한 승률/복승률 — 트레이너별 평균의 평균이 아니라
-    "그 달 아무 말이나 무작위로 골랐을 때" 기준치입니다. 점에 마우스를 올리면 출주 건수가 뜹니다.
+    "그 달 아무 말이나 무작위로 골랐을 때" 기준치입니다. 점에 마우스를 올리거나(모바일은 탭) 출주 건수를 확인하세요.
   </div>"""
 
 
@@ -518,6 +521,12 @@ def main():
   .trend-panel {{ background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px 4px; }}
   .trend-title {{ font-size: 12.5px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }}
   .trend-svg {{ width: 100%; height: auto; display: block; }}
+  .cdot {{ cursor: pointer; }}
+  .chart-tip {{ position: fixed; z-index: 50; background: var(--ink); color: var(--surface);
+                font-size: 11.5px; font-weight: 600; padding: 5px 9px; border-radius: 6px;
+                pointer-events: none; white-space: nowrap; transform: translate(-50%, -100%);
+                margin-top: -8px; display: none; }}
+  .chart-tip.show {{ display: block; }}
 </style>
 </head>
 <body>
@@ -591,6 +600,43 @@ def main():
     {unscored_cards}
   </div>
 </div>
+<div class="chart-tip" id="chart-tip"></div>
+<script>
+(function() {{
+  var tip = document.getElementById('chart-tip');
+  function showTip(el, x, y) {{
+    tip.textContent = el.getAttribute('data-tip');
+    tip.style.left = x + 'px';
+    tip.style.top = y + 'px';
+    tip.classList.add('show');
+  }}
+  function hideTip() {{ tip.classList.remove('show'); }}
+  document.addEventListener('mouseover', function(e) {{
+    var el = e.target.closest('.cdot');
+    if (el) showTip(el, e.clientX, e.clientY);
+  }});
+  document.addEventListener('mousemove', function(e) {{
+    if (tip.classList.contains('show') && e.target.closest('.cdot')) {{
+      tip.style.left = e.clientX + 'px';
+      tip.style.top = e.clientY + 'px';
+    }}
+  }});
+  document.addEventListener('mouseout', function(e) {{
+    if (e.target.closest('.cdot')) hideTip();
+  }});
+  document.addEventListener('touchstart', function(e) {{
+    var el = e.target.closest('.cdot');
+    if (el) {{
+      var t = e.touches[0];
+      showTip(el, t.clientX, t.clientY);
+      e.preventDefault();
+    }} else {{
+      hideTip();
+    }}
+  }}, {{passive: false}});
+  document.addEventListener('touchend', function() {{ setTimeout(hideTip, 1500); }});
+}})();
+</script>
 </body>
 </html>"""
 
