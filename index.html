@@ -68,6 +68,8 @@
   .mini-table th { position: sticky; top: 0; background: var(--chip-bg); z-index: 1; }
   .mini-table th, .mini-table td { font-size: 11.5px; padding: 5px 8px; text-align: center; border-bottom: 1px solid var(--border); white-space: nowrap; }
   .mini-table tr.is-mine { background: var(--accent-bg); font-weight: 700; }
+  .mini-table tr.is-unranked { color: var(--ink-muted); }
+  .mini-table tr.is-unranked.is-mine { background: var(--chip-bg); }
 
   .guide { background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
             padding: 16px 18px; margin-bottom: 18px; }
@@ -99,9 +101,9 @@
 <div class="wrap">
   <h1>11조 대시보드</h1>
   <div class="meta">
-    생성 시각: 2026-10-20 06:16<br>
+    생성 시각: 2026-10-20 07:11<br>
     레이팅(백분위+추세) + 러닝스타일(선행+추입) 조합점수, 동등가중 · 백테스트 검증 완료
-    (Spearman -0.3175, 경주단위 1위픽 승률 2.03배 — 단 6~8두 소규모 경주는 표본 부족으로 추가 검증 필요)
+    (Spearman -0.3149, 경주단위 1위픽 승률 2.11배 — 단 6~8두 소규모 경주는 표본 부족으로 추가 검증 필요)
   </div>
 
   <details class="guide" open>
@@ -122,7 +124,7 @@
 
       <h3>이거 믿을 만한가요?</h3>
       <p>과거 1년치(710개 경주, 7,800여 출전기록)로 검증했습니다. <b>이 점수로 1등을 뽑았을 때, 무작위로 찍었을 때보다 약 2배 더 자주 실제로 우승</b>했습니다
-      (367개 경주 테스트, 승률 21.3% vs 무작위 10.5%). 다만 6~8두짜리 소규모 경주는 아직 표본이 적어 추가 검증이 필요합니다.</p>
+      (367개 경주 테스트, 승률 22.1% vs 무작위 10.5%). 다만 6~8두짜리 소규모 경주는 아직 표본이 적어 추가 검증이 필요합니다.</p>
 
       <h3>배지는 무슨 뜻인가요?</h3>
       <ul>
@@ -137,7 +139,11 @@
       <h3>카드를 펼치면 뭐가 나오나요?</h3>
       <p>각 말 카드 아래 <b>"거리별 성적"</b>을 펼치면 이 말이 뛰어본 모든 거리·등급에서의 성적을,
       <b>"상대마 비교"</b>를 펼치면 같은 등급·거리·주로상태 조건의 다른 마방 말들과 나란히 순위를 비교해서 볼 수 있습니다
-      (★ 표시 = 우리 말).</p>
+      (★ 표시 = 우리 말). 레이팅이 없는 말(신마·최하위군)도 같은 조건의 상대마 목록 맨 아래에 순위 없이("–") 같이 표시됩니다
+      — 순위는 못 매기지만 어떤 말들과 같이 뛰는지는 보이게 하기 위함입니다.
+      OPEN 경주는 등급이 아니라 "등급 제한 없이 뛰는 경주"라 레이팅이 경주마다 들쭉날쭉이라서,
+      OPEN에서 뛴 말은 실제 레이팅 값으로 번호등급(1~6등급)에 맞춰 환산해서 비교군을 묶습니다
+      (비교 요약에 "국3등급(OPEN환산, 원등급 국OPEN)"처럼 표시됨).</p>
 
       <div class="guide-note">
         ⚠ <b>이 점수는 참고자료입니다.</b> 실제 출마등록(경주 신청)은 조교사가 직접 판단해서 하는 것이고,
@@ -183,6 +189,626 @@
       <div class="card-top">
         <div class="rank">1</div>
         <div class="card-title">
+          <div class="hname">백투더드림</div>
+          <div class="sub">최근출전 32일 전</div>
+          
+        </div>
+        <div class="score-pill" style="background:var(--good)">78.3</div>
+      </div>
+      <div class="chip-row"><span class="chip">국5등급 · 1300M</span><span class="badge badge-mid" title="현재등급 기준 — 비교 가능한 거리 1개뿐(판단 보류 권장, 데이터 더 쌓이면 재평가)">최적거리 1300M (88%ile)</span><span class="badge badge-ok">적정</span><span class="badge badge-mid" title="손병철 데뷔(2026-07-01) 이전, 2026.04까지 임금만 마방 소속이었음">이전: 임금만(2026.04)</span></div>
+      <div class="stat-grid"><div class="stat"><div class="stat-label">등급내백분위</div><div class="stat-value">88%</div></div><div class="stat"><div class="stat-label">레이팅추세</div><div class="stat-value">상승(+4)</div></div><div class="stat"><div class="stat-label">선행성향</div><div class="stat-value">63%</div></div><div class="stat"><div class="stat-label">추입성향</div><div class="stat-value">+10%</div></div></div>
+      <div class="details">
+            <details>
+              <summary>거리별 성적 (3개 거리x등급 조합)</summary>
+              <div class="scroll-box">
+              <table class="mini-table">
+                <thead><tr><th>거리</th><th>출전</th><th>평균순위비율</th><th>최고순위</th><th>등급</th><th>레이팅</th><th>백분위</th><th>최근출전일</th></tr></thead>
+                <tbody>
+        <tr>
+          <td>1300M</td>
+          <td>2전</td>
+          <td>0.21</td>
+          <td>2위</td>
+          <td>국6등급</td>
+          <td></td>
+          <td></td>
+          <td>2026-03-27</td>
+        </tr>
+        <tr>
+          <td>1300M</td>
+          <td>4전</td>
+          <td>0.50</td>
+          <td>2위</td>
+          <td>국5등급</td>
+          <td>33</td>
+          <td><span style="color:var(--good);font-weight:700;">88%</span></td>
+          <td>2026-09-18</td>
+        </tr>
+        <tr>
+          <td>1400M</td>
+          <td>1전</td>
+          <td>0.08</td>
+          <td>1위</td>
+          <td>국6등급</td>
+          <td></td>
+          <td></td>
+          <td>2026-04-24</td>
+        </tr></tbody>
+              </table>
+              </div>
+            </details>
+            <details>
+              <summary>상대마 비교 (국5등급 / 1300M / 건조 — 모집단 62두 중 3위, 전체 62두)</summary>
+              <div class="scroll-box">
+              <table class="mini-table">
+                <thead><tr><th>순위</th><th>마명</th><th>조교사</th><th>마주</th><th>레이팅</th><th>추세</th><th>조합점수</th></tr></thead>
+                <tbody>
+        <tr>
+          <td>1</td>
+          <td>글로벌히로인</td>
+          <td>조용배</td>
+          <td>차청일</td>
+          <td>35</td>
+          <td>+8</td>
+          <td>93.5</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>테미스</td>
+          <td>방동석</td>
+          <td>김조은</td>
+          <td>34</td>
+          <td>+8</td>
+          <td>91.5</td>
+        </tr>
+        <tr class="is-mine">
+          <td>3</td>
+          <td>백투더드림 ★</td>
+          <td>손병철</td>
+          <td>무지개렌트카</td>
+          <td>33</td>
+          <td>+4</td>
+          <td>88.3</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>파워풀메니피</td>
+          <td>문현철</td>
+          <td>(주)녹원목장</td>
+          <td>33</td>
+          <td>+3</td>
+          <td>86.7</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>스텔스킹맨</td>
+          <td>이상영</td>
+          <td>우만식</td>
+          <td>32</td>
+          <td>+3</td>
+          <td>85.5</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>원더풀프리치</td>
+          <td>임성실</td>
+          <td>지성배</td>
+          <td>29</td>
+          <td></td>
+          <td>80.6</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>오아시스킹덤</td>
+          <td>백광열</td>
+          <td>이종훈</td>
+          <td>29</td>
+          <td></td>
+          <td>80.6</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>온리포미</td>
+          <td>토마스</td>
+          <td>신윤경</td>
+          <td>29</td>
+          <td></td>
+          <td>80.6</td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>에이스크로우</td>
+          <td>최기홍</td>
+          <td>(주)대홍에이스건업</td>
+          <td>29</td>
+          <td></td>
+          <td>80.6</td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td>리플즈마린</td>
+          <td>최기홍</td>
+          <td>이경희</td>
+          <td>35</td>
+          <td>+0</td>
+          <td>75.0</td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td>최강해피</td>
+          <td>강형곤</td>
+          <td>전종섭</td>
+          <td>29</td>
+          <td>+3</td>
+          <td>74.2</td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td>정문스킵</td>
+          <td>라이스</td>
+          <td>김재영</td>
+          <td>28</td>
+          <td></td>
+          <td>74.2</td>
+        </tr>
+        <tr>
+          <td>13</td>
+          <td>오버레인보우</td>
+          <td>조용배</td>
+          <td>김정두</td>
+          <td>28</td>
+          <td></td>
+          <td>74.2</td>
+        </tr>
+        <tr>
+          <td>14</td>
+          <td>필승위너</td>
+          <td>임성실</td>
+          <td>대길</td>
+          <td>28</td>
+          <td></td>
+          <td>74.2</td>
+        </tr>
+        <tr>
+          <td>15</td>
+          <td>닥터헌터</td>
+          <td>백광열</td>
+          <td>권혁희</td>
+          <td>34</td>
+          <td>+0</td>
+          <td>73.0</td>
+        </tr>
+        <tr>
+          <td>16</td>
+          <td>석세스데이</td>
+          <td>민장기</td>
+          <td>이종훈</td>
+          <td>34</td>
+          <td>+0</td>
+          <td>73.0</td>
+        </tr>
+        <tr>
+          <td>17</td>
+          <td>노던퀸</td>
+          <td>라이스</td>
+          <td>이시돌협회</td>
+          <td>29</td>
+          <td>+2</td>
+          <td>72.2</td>
+        </tr>
+        <tr>
+          <td>18</td>
+          <td>나이스명가</td>
+          <td>라이스</td>
+          <td>정영광</td>
+          <td>30</td>
+          <td>+0</td>
+          <td>65.3</td>
+        </tr>
+        <tr>
+          <td>19</td>
+          <td>아유레디</td>
+          <td>임성실</td>
+          <td>김무현</td>
+          <td>30</td>
+          <td>+0</td>
+          <td>65.3</td>
+        </tr>
+        <tr>
+          <td>20</td>
+          <td>위대한하트</td>
+          <td>권승주</td>
+          <td>이종원</td>
+          <td>30</td>
+          <td>+0</td>
+          <td>65.3</td>
+        </tr>
+        <tr>
+          <td>21</td>
+          <td>하늘골드</td>
+          <td>민장기</td>
+          <td>허도행</td>
+          <td>30</td>
+          <td>+0</td>
+          <td>65.3</td>
+        </tr>
+        <tr>
+          <td>22</td>
+          <td>트리플제이</td>
+          <td>임금만</td>
+          <td>서은영</td>
+          <td>30</td>
+          <td>+0</td>
+          <td>65.3</td>
+        </tr>
+        <tr>
+          <td>23</td>
+          <td>빅토리스토리</td>
+          <td>구현완</td>
+          <td>혼디</td>
+          <td>26</td>
+          <td>+2</td>
+          <td>58.5</td>
+        </tr>
+        <tr>
+          <td>24</td>
+          <td>빅스타</td>
+          <td>권승주</td>
+          <td>이성영</td>
+          <td>29</td>
+          <td>+0</td>
+          <td>58.5</td>
+        </tr>
+        <tr>
+          <td>25</td>
+          <td>원더풀라크</td>
+          <td>토마스</td>
+          <td>지성배</td>
+          <td>29</td>
+          <td>+0</td>
+          <td>58.5</td>
+        </tr>
+        <tr>
+          <td>26</td>
+          <td>월드볼드맨</td>
+          <td>임성실</td>
+          <td>윤지중</td>
+          <td>29</td>
+          <td>+0</td>
+          <td>58.5</td>
+        </tr>
+        <tr>
+          <td>27</td>
+          <td>퓨어마린</td>
+          <td>양영남</td>
+          <td>이경희</td>
+          <td>29</td>
+          <td>+0</td>
+          <td>58.5</td>
+        </tr>
+        <tr>
+          <td>28</td>
+          <td>다이아킹덤</td>
+          <td>김도현</td>
+          <td>김호종</td>
+          <td>28</td>
+          <td>+0</td>
+          <td>52.0</td>
+        </tr>
+        <tr>
+          <td>29</td>
+          <td>돌핀킥</td>
+          <td>권승주</td>
+          <td>정우종합건설(주)</td>
+          <td>31</td>
+          <td>-1</td>
+          <td>49.6</td>
+        </tr>
+        <tr>
+          <td>30</td>
+          <td>불빛역마</td>
+          <td>손병직</td>
+          <td>청솔</td>
+          <td>31</td>
+          <td>-1</td>
+          <td>49.6</td>
+        </tr>
+        <tr>
+          <td>31</td>
+          <td>성실월드</td>
+          <td>방동석</td>
+          <td>이동훈</td>
+          <td>30</td>
+          <td>-1</td>
+          <td>46.4</td>
+        </tr>
+        <tr>
+          <td>32</td>
+          <td>레인퀸</td>
+          <td>방동석</td>
+          <td>김호영</td>
+          <td>26</td>
+          <td>+0</td>
+          <td>44.8</td>
+        </tr>
+        <tr>
+          <td>33</td>
+          <td>잇츠릿</td>
+          <td>손병직</td>
+          <td>권경준</td>
+          <td>26</td>
+          <td>+0</td>
+          <td>44.8</td>
+        </tr>
+        <tr>
+          <td>34</td>
+          <td>두바이캔디</td>
+          <td>임성실</td>
+          <td>빅크루즈</td>
+          <td>26</td>
+          <td>+0</td>
+          <td>44.8</td>
+        </tr>
+        <tr>
+          <td>35</td>
+          <td>정문펠릭스</td>
+          <td>라이스</td>
+          <td>김재영</td>
+          <td>26</td>
+          <td>+0</td>
+          <td>44.8</td>
+        </tr>
+        <tr>
+          <td>36</td>
+          <td>원스헤이데이</td>
+          <td>강은석</td>
+          <td>김혜진</td>
+          <td>29</td>
+          <td>-1</td>
+          <td>39.5</td>
+        </tr>
+        <tr>
+          <td>37</td>
+          <td>모어퀴클리</td>
+          <td>손병직</td>
+          <td>양일추</td>
+          <td>25</td>
+          <td>+0</td>
+          <td>38.7</td>
+        </tr>
+        <tr>
+          <td>38</td>
+          <td>퀸레이스</td>
+          <td>양영남</td>
+          <td>이장현</td>
+          <td>25</td>
+          <td>+0</td>
+          <td>38.7</td>
+        </tr>
+        <tr>
+          <td>39</td>
+          <td>대성돌풍</td>
+          <td>하무선</td>
+          <td>청솔</td>
+          <td>25</td>
+          <td>+0</td>
+          <td>38.7</td>
+        </tr>
+        <tr>
+          <td>40</td>
+          <td>감동의돌파</td>
+          <td>권승주</td>
+          <td>오종환</td>
+          <td>25</td>
+          <td>+0</td>
+          <td>38.7</td>
+        </tr>
+        <tr>
+          <td>41</td>
+          <td>두바이선물</td>
+          <td>안우성</td>
+          <td>빅크루즈</td>
+          <td>28</td>
+          <td>-1</td>
+          <td>33.1</td>
+        </tr>
+        <tr>
+          <td>42</td>
+          <td>플라잉슈터</td>
+          <td>조용배</td>
+          <td>김근영</td>
+          <td>24</td>
+          <td>+0</td>
+          <td>33.1</td>
+        </tr>
+        <tr>
+          <td>43</td>
+          <td>그레이트스타</td>
+          <td>손병직</td>
+          <td>배수한</td>
+          <td>24</td>
+          <td>+0</td>
+          <td>33.1</td>
+        </tr>
+        <tr>
+          <td>44</td>
+          <td>승리깃발</td>
+          <td>윤영훈</td>
+          <td>이계옥</td>
+          <td>24</td>
+          <td>+0</td>
+          <td>33.1</td>
+        </tr>
+        <tr>
+          <td>45</td>
+          <td>드림마</td>
+          <td>방동석</td>
+          <td>(주)디알엠씨티</td>
+          <td>24</td>
+          <td>+0</td>
+          <td>33.1</td>
+        </tr>
+        <tr>
+          <td>46</td>
+          <td>뉴리더</td>
+          <td>손병직</td>
+          <td>임석수</td>
+          <td>24</td>
+          <td>+0</td>
+          <td>33.1</td>
+        </tr>
+        <tr>
+          <td>47</td>
+          <td>성실제일</td>
+          <td>방동석</td>
+          <td>이동훈</td>
+          <td>27</td>
+          <td>-1</td>
+          <td>29.8</td>
+        </tr>
+        <tr>
+          <td>48</td>
+          <td>태양의열정</td>
+          <td>임금만</td>
+          <td>최원길</td>
+          <td>27</td>
+          <td>-1</td>
+          <td>29.8</td>
+        </tr>
+        <tr>
+          <td>49</td>
+          <td>신천프리덤</td>
+          <td>강형곤</td>
+          <td>문종원</td>
+          <td>27</td>
+          <td>-1</td>
+          <td>29.8</td>
+        </tr>
+        <tr>
+          <td>50</td>
+          <td>서부이글</td>
+          <td>조용배</td>
+          <td>부희연</td>
+          <td>23</td>
+          <td>+0</td>
+          <td>28.2</td>
+        </tr>
+        <tr>
+          <td>51</td>
+          <td>골든나이스</td>
+          <td>조용배</td>
+          <td>김화원</td>
+          <td>23</td>
+          <td>+0</td>
+          <td>28.2</td>
+        </tr>
+        <tr>
+          <td>52</td>
+          <td>스톰포인트</td>
+          <td>조용배</td>
+          <td>퍼플라인</td>
+          <td>23</td>
+          <td>+0</td>
+          <td>28.2</td>
+        </tr>
+        <tr>
+          <td>53</td>
+          <td>다이아나이트</td>
+          <td>구민성</td>
+          <td>김희정</td>
+          <td>23</td>
+          <td>+0</td>
+          <td>28.2</td>
+        </tr>
+        <tr>
+          <td>54</td>
+          <td>월드태양</td>
+          <td>조용배</td>
+          <td>김진영a</td>
+          <td>23</td>
+          <td>+0</td>
+          <td>28.2</td>
+        </tr>
+        <tr>
+          <td>55</td>
+          <td>벨로시랩터</td>
+          <td>최기홍</td>
+          <td>이경희</td>
+          <td>23</td>
+          <td>+0</td>
+          <td>28.2</td>
+        </tr>
+        <tr>
+          <td>56</td>
+          <td>원더풀팀</td>
+          <td>양영남</td>
+          <td>지성배</td>
+          <td>26</td>
+          <td>-1</td>
+          <td>25.8</td>
+        </tr>
+        <tr>
+          <td>57</td>
+          <td>스테이쿨</td>
+          <td>구영준</td>
+          <td>신윤경</td>
+          <td>26</td>
+          <td>-1</td>
+          <td>25.8</td>
+        </tr>
+        <tr>
+          <td>58</td>
+          <td>블루오키드</td>
+          <td>토마스</td>
+          <td>페가수스</td>
+          <td>25</td>
+          <td>-1</td>
+          <td>19.8</td>
+        </tr>
+        <tr>
+          <td>59</td>
+          <td>하이레벨</td>
+          <td>하무선</td>
+          <td>차청일</td>
+          <td>25</td>
+          <td>-1</td>
+          <td>19.8</td>
+        </tr>
+        <tr>
+          <td>60</td>
+          <td>디멘션</td>
+          <td>유현명</td>
+          <td>송승규</td>
+          <td>25</td>
+          <td>-1</td>
+          <td>19.8</td>
+        </tr>
+        <tr>
+          <td>61</td>
+          <td>골든스폿</td>
+          <td>김도현</td>
+          <td>김화원</td>
+          <td>25</td>
+          <td>-1</td>
+          <td>19.8</td>
+        </tr>
+        <tr>
+          <td>62</td>
+          <td>워너비위드유</td>
+          <td>김혜선</td>
+          <td>이일형</td>
+          <td>24</td>
+          <td>-1</td>
+          <td>14.1</td>
+        </tr></tbody>
+              </table>
+              </div>
+            </details></div>
+    </div>
+    <div class="card">
+      <div class="card-top">
+        <div class="rank">2</div>
+        <div class="card-title">
           <div class="hname">판타스틱포스</div>
           <div class="sub">최근출전 9일 전</div>
           <div class="attention">⚠ 출주간격 짧음(9일)</div>
@@ -215,7 +841,7 @@
           <td>3위</td>
           <td>국5등급</td>
           <td>30</td>
-          <td><span style="color:var(--warn);font-weight:700;">52%</span></td>
+          <td><span style="color:var(--warn);font-weight:700;">50%</span></td>
           <td>2025-10-24</td>
         </tr>
         <tr>
@@ -225,7 +851,7 @@
           <td>3위</td>
           <td>국OPEN</td>
           <td>31</td>
-          <td><span style="color:var(--warn);font-weight:700;">62%</span></td>
+          <td><span style="color:var(--good);font-weight:700;">72%</span></td>
           <td>2025-11-23</td>
         </tr>
         <tr>
@@ -255,7 +881,7 @@
           <td>5위</td>
           <td>국OPEN</td>
           <td>36</td>
-          <td><span style="color:var(--good);font-weight:700;">71%</span></td>
+          <td><span style="color:var(--bad);font-weight:700;">1%</span></td>
           <td>2026-03-29</td>
         </tr>
         <tr>
@@ -265,7 +891,7 @@
           <td>2위</td>
           <td>국OPEN</td>
           <td>36</td>
-          <td><span style="color:var(--good);font-weight:700;">71%</span></td>
+          <td><span style="color:var(--bad);font-weight:700;">0%</span></td>
           <td>2026-05-03</td>
         </tr>
         <tr>
@@ -295,7 +921,7 @@
           <td>7위</td>
           <td>국OPEN</td>
           <td>65</td>
-          <td><span style="color:var(--good);font-weight:700;">100%</span></td>
+          <td><span style="color:var(--good);font-weight:700;">96%</span></td>
           <td>2026-10-11</td>
         </tr></tbody>
               </table>
@@ -412,871 +1038,16 @@
     </div>
     <div class="card">
       <div class="card-top">
-        <div class="rank">2</div>
-        <div class="card-title">
-          <div class="hname">백투더드림</div>
-          <div class="sub">최근출전 32일 전</div>
-          
-        </div>
-        <div class="score-pill" style="background:var(--good)">76.7</div>
-      </div>
-      <div class="chip-row"><span class="chip">국5등급 · 1300M</span><span class="badge badge-mid" title="현재등급 기준 — 비교 가능한 거리 1개뿐(판단 보류 권장, 데이터 더 쌓이면 재평가)">최적거리 1300M (88%ile)</span><span class="badge badge-ok">적정</span><span class="badge badge-mid" title="손병철 데뷔(2026-07-01) 이전, 2026.04까지 임금만 마방 소속이었음">이전: 임금만(2026.04)</span></div>
-      <div class="stat-grid"><div class="stat"><div class="stat-label">등급내백분위</div><div class="stat-value">88%</div></div><div class="stat"><div class="stat-label">레이팅추세</div><div class="stat-value">상승(+4)</div></div><div class="stat"><div class="stat-label">선행성향</div><div class="stat-value">63%</div></div><div class="stat"><div class="stat-label">추입성향</div><div class="stat-value">+10%</div></div></div>
-      <div class="details">
-            <details>
-              <summary>거리별 성적 (3개 거리x등급 조합)</summary>
-              <div class="scroll-box">
-              <table class="mini-table">
-                <thead><tr><th>거리</th><th>출전</th><th>평균순위비율</th><th>최고순위</th><th>등급</th><th>레이팅</th><th>백분위</th><th>최근출전일</th></tr></thead>
-                <tbody>
-        <tr>
-          <td>1300M</td>
-          <td>2전</td>
-          <td>0.21</td>
-          <td>2위</td>
-          <td>국6등급</td>
-          <td></td>
-          <td></td>
-          <td>2026-03-27</td>
-        </tr>
-        <tr>
-          <td>1300M</td>
-          <td>4전</td>
-          <td>0.50</td>
-          <td>2위</td>
-          <td>국5등급</td>
-          <td>33</td>
-          <td><span style="color:var(--good);font-weight:700;">88%</span></td>
-          <td>2026-09-18</td>
-        </tr>
-        <tr>
-          <td>1400M</td>
-          <td>1전</td>
-          <td>0.08</td>
-          <td>1위</td>
-          <td>국6등급</td>
-          <td></td>
-          <td></td>
-          <td>2026-04-24</td>
-        </tr></tbody>
-              </table>
-              </div>
-            </details>
-            <details>
-              <summary>상대마 비교 (국5등급 / 1300M / 건조 — 모집단 62두 중 3위, 전체 62두)</summary>
-              <div class="scroll-box">
-              <table class="mini-table">
-                <thead><tr><th>순위</th><th>마명</th><th>조교사</th><th>마주</th><th>레이팅</th><th>추세</th><th>조합점수</th></tr></thead>
-                <tbody>
-        <tr>
-          <td>1</td>
-          <td>글로벌히로인</td>
-          <td>조용배</td>
-          <td>차청일</td>
-          <td>35</td>
-          <td>+8</td>
-          <td>93.5</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>테미스</td>
-          <td>방동석</td>
-          <td>김조은</td>
-          <td>34</td>
-          <td>+8</td>
-          <td>91.5</td>
-        </tr>
-        <tr class="is-mine">
-          <td>3</td>
-          <td>백투더드림 ★</td>
-          <td>손병철</td>
-          <td>무지개렌트카</td>
-          <td>33</td>
-          <td>+4</td>
-          <td>88.3</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>파워풀메니피</td>
-          <td>문현철</td>
-          <td>(주)녹원목장</td>
-          <td>33</td>
-          <td>+3</td>
-          <td>86.7</td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td>스텔스킹맨</td>
-          <td>이상영</td>
-          <td>우만식</td>
-          <td>32</td>
-          <td>+3</td>
-          <td>85.5</td>
-        </tr>
-        <tr>
-          <td>6</td>
-          <td>원더풀프리치</td>
-          <td>임성실</td>
-          <td>지성배</td>
-          <td>29</td>
-          <td></td>
-          <td>80.6</td>
-        </tr>
-        <tr>
-          <td>7</td>
-          <td>에이스크로우</td>
-          <td>최기홍</td>
-          <td>(주)대홍에이스건업</td>
-          <td>29</td>
-          <td></td>
-          <td>80.6</td>
-        </tr>
-        <tr>
-          <td>8</td>
-          <td>온리포미</td>
-          <td>토마스</td>
-          <td>신윤경</td>
-          <td>29</td>
-          <td></td>
-          <td>80.6</td>
-        </tr>
-        <tr>
-          <td>9</td>
-          <td>오아시스킹덤</td>
-          <td>백광열</td>
-          <td>이종훈</td>
-          <td>29</td>
-          <td></td>
-          <td>80.6</td>
-        </tr>
-        <tr>
-          <td>10</td>
-          <td>리플즈마린</td>
-          <td>최기홍</td>
-          <td>이경희</td>
-          <td>35</td>
-          <td>+0</td>
-          <td>75.0</td>
-        </tr>
-        <tr>
-          <td>11</td>
-          <td>오버레인보우</td>
-          <td>조용배</td>
-          <td>김정두</td>
-          <td>28</td>
-          <td></td>
-          <td>74.2</td>
-        </tr>
-        <tr>
-          <td>12</td>
-          <td>최강해피</td>
-          <td>강형곤</td>
-          <td>전종섭</td>
-          <td>29</td>
-          <td>+3</td>
-          <td>74.2</td>
-        </tr>
-        <tr>
-          <td>13</td>
-          <td>정문스킵</td>
-          <td>라이스</td>
-          <td>김재영</td>
-          <td>28</td>
-          <td></td>
-          <td>74.2</td>
-        </tr>
-        <tr>
-          <td>14</td>
-          <td>필승위너</td>
-          <td>임성실</td>
-          <td>대길</td>
-          <td>28</td>
-          <td></td>
-          <td>74.2</td>
-        </tr>
-        <tr>
-          <td>15</td>
-          <td>석세스데이</td>
-          <td>민장기</td>
-          <td>이종훈</td>
-          <td>34</td>
-          <td>+0</td>
-          <td>73.0</td>
-        </tr>
-        <tr>
-          <td>16</td>
-          <td>닥터헌터</td>
-          <td>백광열</td>
-          <td>권혁희</td>
-          <td>34</td>
-          <td>+0</td>
-          <td>73.0</td>
-        </tr>
-        <tr>
-          <td>17</td>
-          <td>노던퀸</td>
-          <td>라이스</td>
-          <td>이시돌협회</td>
-          <td>29</td>
-          <td>+2</td>
-          <td>72.2</td>
-        </tr>
-        <tr>
-          <td>18</td>
-          <td>나이스명가</td>
-          <td>라이스</td>
-          <td>정영광</td>
-          <td>30</td>
-          <td>+0</td>
-          <td>65.3</td>
-        </tr>
-        <tr>
-          <td>19</td>
-          <td>아유레디</td>
-          <td>임성실</td>
-          <td>김무현</td>
-          <td>30</td>
-          <td>+0</td>
-          <td>65.3</td>
-        </tr>
-        <tr>
-          <td>20</td>
-          <td>위대한하트</td>
-          <td>권승주</td>
-          <td>이종원</td>
-          <td>30</td>
-          <td>+0</td>
-          <td>65.3</td>
-        </tr>
-        <tr>
-          <td>21</td>
-          <td>트리플제이</td>
-          <td>임금만</td>
-          <td>서은영</td>
-          <td>30</td>
-          <td>+0</td>
-          <td>65.3</td>
-        </tr>
-        <tr>
-          <td>22</td>
-          <td>하늘골드</td>
-          <td>민장기</td>
-          <td>허도행</td>
-          <td>30</td>
-          <td>+0</td>
-          <td>65.3</td>
-        </tr>
-        <tr>
-          <td>23</td>
-          <td>원더풀라크</td>
-          <td>토마스</td>
-          <td>지성배</td>
-          <td>29</td>
-          <td>+0</td>
-          <td>58.5</td>
-        </tr>
-        <tr>
-          <td>24</td>
-          <td>빅토리스토리</td>
-          <td>구현완</td>
-          <td>혼디</td>
-          <td>26</td>
-          <td>+2</td>
-          <td>58.5</td>
-        </tr>
-        <tr>
-          <td>25</td>
-          <td>퓨어마린</td>
-          <td>양영남</td>
-          <td>이경희</td>
-          <td>29</td>
-          <td>+0</td>
-          <td>58.5</td>
-        </tr>
-        <tr>
-          <td>26</td>
-          <td>빅스타</td>
-          <td>권승주</td>
-          <td>이성영</td>
-          <td>29</td>
-          <td>+0</td>
-          <td>58.5</td>
-        </tr>
-        <tr>
-          <td>27</td>
-          <td>월드볼드맨</td>
-          <td>임성실</td>
-          <td>윤지중</td>
-          <td>29</td>
-          <td>+0</td>
-          <td>58.5</td>
-        </tr>
-        <tr>
-          <td>28</td>
-          <td>다이아킹덤</td>
-          <td>김도현</td>
-          <td>김호종</td>
-          <td>28</td>
-          <td>+0</td>
-          <td>52.0</td>
-        </tr>
-        <tr>
-          <td>29</td>
-          <td>돌핀킥</td>
-          <td>권승주</td>
-          <td>정우종합건설(주)</td>
-          <td>31</td>
-          <td>-1</td>
-          <td>49.6</td>
-        </tr>
-        <tr>
-          <td>30</td>
-          <td>불빛역마</td>
-          <td>손병직</td>
-          <td>청솔</td>
-          <td>31</td>
-          <td>-1</td>
-          <td>49.6</td>
-        </tr>
-        <tr>
-          <td>31</td>
-          <td>성실월드</td>
-          <td>방동석</td>
-          <td>이동훈</td>
-          <td>30</td>
-          <td>-1</td>
-          <td>46.4</td>
-        </tr>
-        <tr>
-          <td>32</td>
-          <td>두바이캔디</td>
-          <td>임성실</td>
-          <td>빅크루즈</td>
-          <td>26</td>
-          <td>+0</td>
-          <td>44.8</td>
-        </tr>
-        <tr>
-          <td>33</td>
-          <td>잇츠릿</td>
-          <td>손병직</td>
-          <td>권경준</td>
-          <td>26</td>
-          <td>+0</td>
-          <td>44.8</td>
-        </tr>
-        <tr>
-          <td>34</td>
-          <td>정문펠릭스</td>
-          <td>라이스</td>
-          <td>김재영</td>
-          <td>26</td>
-          <td>+0</td>
-          <td>44.8</td>
-        </tr>
-        <tr>
-          <td>35</td>
-          <td>레인퀸</td>
-          <td>방동석</td>
-          <td>김호영</td>
-          <td>26</td>
-          <td>+0</td>
-          <td>44.8</td>
-        </tr>
-        <tr>
-          <td>36</td>
-          <td>원스헤이데이</td>
-          <td>강은석</td>
-          <td>김혜진</td>
-          <td>29</td>
-          <td>-1</td>
-          <td>39.5</td>
-        </tr>
-        <tr>
-          <td>37</td>
-          <td>퀸레이스</td>
-          <td>양영남</td>
-          <td>이장현</td>
-          <td>25</td>
-          <td>+0</td>
-          <td>38.7</td>
-        </tr>
-        <tr>
-          <td>38</td>
-          <td>모어퀴클리</td>
-          <td>손병직</td>
-          <td>양일추</td>
-          <td>25</td>
-          <td>+0</td>
-          <td>38.7</td>
-        </tr>
-        <tr>
-          <td>39</td>
-          <td>감동의돌파</td>
-          <td>권승주</td>
-          <td>오종환</td>
-          <td>25</td>
-          <td>+0</td>
-          <td>38.7</td>
-        </tr>
-        <tr>
-          <td>40</td>
-          <td>대성돌풍</td>
-          <td>하무선</td>
-          <td>청솔</td>
-          <td>25</td>
-          <td>+0</td>
-          <td>38.7</td>
-        </tr>
-        <tr>
-          <td>41</td>
-          <td>두바이선물</td>
-          <td>안우성</td>
-          <td>빅크루즈</td>
-          <td>28</td>
-          <td>-1</td>
-          <td>33.1</td>
-        </tr>
-        <tr>
-          <td>42</td>
-          <td>플라잉슈터</td>
-          <td>조용배</td>
-          <td>김근영</td>
-          <td>24</td>
-          <td>+0</td>
-          <td>33.1</td>
-        </tr>
-        <tr>
-          <td>43</td>
-          <td>그레이트스타</td>
-          <td>손병직</td>
-          <td>배수한</td>
-          <td>24</td>
-          <td>+0</td>
-          <td>33.1</td>
-        </tr>
-        <tr>
-          <td>44</td>
-          <td>드림마</td>
-          <td>방동석</td>
-          <td>(주)디알엠씨티</td>
-          <td>24</td>
-          <td>+0</td>
-          <td>33.1</td>
-        </tr>
-        <tr>
-          <td>45</td>
-          <td>뉴리더</td>
-          <td>손병직</td>
-          <td>임석수</td>
-          <td>24</td>
-          <td>+0</td>
-          <td>33.1</td>
-        </tr>
-        <tr>
-          <td>46</td>
-          <td>승리깃발</td>
-          <td>윤영훈</td>
-          <td>이계옥</td>
-          <td>24</td>
-          <td>+0</td>
-          <td>33.1</td>
-        </tr>
-        <tr>
-          <td>47</td>
-          <td>태양의열정</td>
-          <td>임금만</td>
-          <td>최원길</td>
-          <td>27</td>
-          <td>-1</td>
-          <td>29.8</td>
-        </tr>
-        <tr>
-          <td>48</td>
-          <td>성실제일</td>
-          <td>방동석</td>
-          <td>이동훈</td>
-          <td>27</td>
-          <td>-1</td>
-          <td>29.8</td>
-        </tr>
-        <tr>
-          <td>49</td>
-          <td>신천프리덤</td>
-          <td>강형곤</td>
-          <td>문종원</td>
-          <td>27</td>
-          <td>-1</td>
-          <td>29.8</td>
-        </tr>
-        <tr>
-          <td>50</td>
-          <td>벨로시랩터</td>
-          <td>최기홍</td>
-          <td>이경희</td>
-          <td>23</td>
-          <td>+0</td>
-          <td>28.2</td>
-        </tr>
-        <tr>
-          <td>51</td>
-          <td>골든나이스</td>
-          <td>조용배</td>
-          <td>김화원</td>
-          <td>23</td>
-          <td>+0</td>
-          <td>28.2</td>
-        </tr>
-        <tr>
-          <td>52</td>
-          <td>스톰포인트</td>
-          <td>조용배</td>
-          <td>퍼플라인</td>
-          <td>23</td>
-          <td>+0</td>
-          <td>28.2</td>
-        </tr>
-        <tr>
-          <td>53</td>
-          <td>서부이글</td>
-          <td>조용배</td>
-          <td>부희연</td>
-          <td>23</td>
-          <td>+0</td>
-          <td>28.2</td>
-        </tr>
-        <tr>
-          <td>54</td>
-          <td>다이아나이트</td>
-          <td>구민성</td>
-          <td>김희정</td>
-          <td>23</td>
-          <td>+0</td>
-          <td>28.2</td>
-        </tr>
-        <tr>
-          <td>55</td>
-          <td>월드태양</td>
-          <td>조용배</td>
-          <td>김진영a</td>
-          <td>23</td>
-          <td>+0</td>
-          <td>28.2</td>
-        </tr>
-        <tr>
-          <td>56</td>
-          <td>원더풀팀</td>
-          <td>양영남</td>
-          <td>지성배</td>
-          <td>26</td>
-          <td>-1</td>
-          <td>25.8</td>
-        </tr>
-        <tr>
-          <td>57</td>
-          <td>스테이쿨</td>
-          <td>구영준</td>
-          <td>신윤경</td>
-          <td>26</td>
-          <td>-1</td>
-          <td>25.8</td>
-        </tr>
-        <tr>
-          <td>58</td>
-          <td>블루오키드</td>
-          <td>토마스</td>
-          <td>페가수스</td>
-          <td>25</td>
-          <td>-1</td>
-          <td>19.8</td>
-        </tr>
-        <tr>
-          <td>59</td>
-          <td>하이레벨</td>
-          <td>하무선</td>
-          <td>차청일</td>
-          <td>25</td>
-          <td>-1</td>
-          <td>19.8</td>
-        </tr>
-        <tr>
-          <td>60</td>
-          <td>디멘션</td>
-          <td>유현명</td>
-          <td>송승규</td>
-          <td>25</td>
-          <td>-1</td>
-          <td>19.8</td>
-        </tr>
-        <tr>
-          <td>61</td>
-          <td>골든스폿</td>
-          <td>김도현</td>
-          <td>김화원</td>
-          <td>25</td>
-          <td>-1</td>
-          <td>19.8</td>
-        </tr>
-        <tr>
-          <td>62</td>
-          <td>워너비위드유</td>
-          <td>김혜선</td>
-          <td>이일형</td>
-          <td>24</td>
-          <td>-1</td>
-          <td>14.1</td>
-        </tr></tbody>
-              </table>
-              </div>
-            </details></div>
-    </div>
-    <div class="card">
-      <div class="card-top">
         <div class="rank">3</div>
-        <div class="card-title">
-          <div class="hname">판타스틱볼트</div>
-          <div class="sub">최근출전 5일 전</div>
-          <div class="attention">⚠ 출주간격 짧음(5일)</div>
-        </div>
-        <div class="score-pill" style="background:var(--warn)">64.2</div>
-      </div>
-      <div class="chip-row"><span class="chip">국OPEN · 1600M</span><span class="badge badge-mid" title="현재등급 기준 — 비교 가능한 거리 1개뿐(판단 보류 권장, 데이터 더 쌓이면 재평가)">최적거리 1600M (86%ile)</span><span class="badge badge-warn">⚠ 간격주의</span><span class="badge badge-mid" title="손병철 데뷔(2026-07-01) 이전, 2026.04까지 임금만 마방 소속이었음">이전: 임금만(2026.04)</span></div>
-      <div class="stat-grid"><div class="stat"><div class="stat-label">등급내백분위</div><div class="stat-value">86%</div></div><div class="stat"><div class="stat-label">레이팅추세</div><div class="stat-value">유지(+0)</div></div><div class="stat"><div class="stat-label">선행성향</div><div class="stat-value">83%</div></div><div class="stat"><div class="stat-label">추입성향</div><div class="stat-value">+2%</div></div></div>
-      <div class="details">
-            <details>
-              <summary>거리별 성적 (5개 거리x등급 조합)</summary>
-              <div class="scroll-box">
-              <table class="mini-table">
-                <thead><tr><th>거리</th><th>출전</th><th>평균순위비율</th><th>최고순위</th><th>등급</th><th>레이팅</th><th>백분위</th><th>최근출전일</th></tr></thead>
-                <tbody>
-        <tr>
-          <td>1200M</td>
-          <td>2전</td>
-          <td>0.41</td>
-          <td>1위</td>
-          <td>국6등급</td>
-          <td></td>
-          <td></td>
-          <td>2025-10-24</td>
-        </tr>
-        <tr>
-          <td>1400M</td>
-          <td>2전</td>
-          <td>0.18</td>
-          <td>1위</td>
-          <td>국5등급</td>
-          <td>29</td>
-          <td><span style="color:var(--bad);font-weight:700;">48%</span></td>
-          <td>2025-12-12</td>
-        </tr>
-        <tr>
-          <td>1600M</td>
-          <td>1전</td>
-          <td>0.50</td>
-          <td>6위</td>
-          <td>국4등급</td>
-          <td>37</td>
-          <td><span style="color:var(--bad);font-weight:700;">12%</span></td>
-          <td>2026-01-25</td>
-        </tr>
-        <tr>
-          <td>1600M</td>
-          <td>1전</td>
-          <td>0.17</td>
-          <td>2위</td>
-          <td>혼4등급</td>
-          <td>37</td>
-          <td><span style="color:var(--bad);font-weight:700;">5%</span></td>
-          <td>2026-03-08</td>
-        </tr>
-        <tr>
-          <td>1600M</td>
-          <td>1전</td>
-          <td>0.75</td>
-          <td>12위</td>
-          <td>국OPEN</td>
-          <td>39</td>
-          <td><span style="color:var(--good);font-weight:700;">86%</span></td>
-          <td>2026-04-05</td>
-        </tr></tbody>
-              </table>
-              </div>
-            </details>
-            <details>
-              <summary>상대마 비교 (국OPEN, 전체 17두)</summary>
-              <div class="scroll-box">
-              <table class="mini-table">
-                <thead><tr><th>순위</th><th>마명</th><th>조교사</th><th>마주</th><th>레이팅</th><th>추세</th><th>조합점수</th></tr></thead>
-                <tbody>
-        <tr>
-          <td>1</td>
-          <td>두바이하트</td>
-          <td>임성실</td>
-          <td>빅크루즈</td>
-          <td>35</td>
-          <td></td>
-          <td>82.4</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>머스킷스톰</td>
-          <td>김도현</td>
-          <td>김갑수</td>
-          <td>42</td>
-          <td>+12</td>
-          <td>76.5</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>빅토리챔프</td>
-          <td>민장기</td>
-          <td>이종훈</td>
-          <td>31</td>
-          <td></td>
-          <td>73.5</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>라벤더크라운</td>
-          <td>김혜선</td>
-          <td>파인트리</td>
-          <td>37</td>
-          <td>+7</td>
-          <td>70.6</td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td>로열프라이드</td>
-          <td>임성실</td>
-          <td>김무현</td>
-          <td>30</td>
-          <td></td>
-          <td>63.2</td>
-        </tr>
-        <tr>
-          <td>6</td>
-          <td>서니와일드</td>
-          <td>문현철</td>
-          <td>최상일</td>
-          <td>30</td>
-          <td></td>
-          <td>63.2</td>
-        </tr>
-        <tr>
-          <td>7</td>
-          <td>슈펙스니케</td>
-          <td>문현철</td>
-          <td>홍애란</td>
-          <td>30</td>
-          <td></td>
-          <td>63.2</td>
-        </tr>
-        <tr>
-          <td>8</td>
-          <td>이클립스비전</td>
-          <td>김혜선</td>
-          <td>조한수</td>
-          <td>35</td>
-          <td>+2</td>
-          <td>61.8</td>
-        </tr>
-        <tr>
-          <td>9</td>
-          <td>티핑포인트</td>
-          <td>강형곤</td>
-          <td>이혜란</td>
-          <td>32</td>
-          <td>+2</td>
-          <td>57.4</td>
-        </tr>
-        <tr>
-          <td>10</td>
-          <td>파워풀워리어</td>
-          <td>토마스</td>
-          <td>(주)녹원목장</td>
-          <td>29</td>
-          <td></td>
-          <td>51.5</td>
-        </tr>
-        <tr>
-          <td>11</td>
-          <td>빅토리타임</td>
-          <td>민장기</td>
-          <td>이장현</td>
-          <td>27</td>
-          <td></td>
-          <td>44.1</td>
-        </tr>
-        <tr>
-          <td>12</td>
-          <td>게임메이커</td>
-          <td>손병철</td>
-          <td>(주)제주플러스</td>
-          <td>27</td>
-          <td></td>
-          <td>44.1</td>
-        </tr>
-        <tr>
-          <td>13</td>
-          <td>세라프</td>
-          <td>임성실</td>
-          <td>대길</td>
-          <td>31</td>
-          <td>+0</td>
-          <td>42.6</td>
-        </tr>
-        <tr>
-          <td>14</td>
-          <td>프라임제니</td>
-          <td>이상영</td>
-          <td>곽종수</td>
-          <td>30</td>
-          <td>+0</td>
-          <td>32.4</td>
-        </tr>
-        <tr>
-          <td>15</td>
-          <td>닥터애틀랜틱</td>
-          <td>백광열</td>
-          <td>권혁희</td>
-          <td>30</td>
-          <td>+0</td>
-          <td>32.4</td>
-        </tr>
-        <tr>
-          <td>16</td>
-          <td>대길환호</td>
-          <td>강은석</td>
-          <td>대길</td>
-          <td>29</td>
-          <td>+0</td>
-          <td>20.6</td>
-        </tr>
-        <tr>
-          <td>17</td>
-          <td>선더웨이브</td>
-          <td>권승주</td>
-          <td>손병철</td>
-          <td>29</td>
-          <td>+0</td>
-          <td>20.6</td>
-        </tr></tbody>
-              </table>
-              </div>
-            </details></div>
-    </div>
-    <div class="card">
-      <div class="card-top">
-        <div class="rank">4</div>
         <div class="card-title">
           <div class="hname">월드트리</div>
           <div class="sub">최근출전 18일 전</div>
           <div class="attention">⚠ 출주간격 짧음(18일)</div>
         </div>
-        <div class="score-pill" style="background:var(--warn)">63.3</div>
+        <div class="score-pill" style="background:var(--warn)">64.2</div>
       </div>
-      <div class="chip-row"><span class="chip">국5등급 · 1800M</span><span class="badge badge-ok" title="현재등급 기준">최적거리 1800M (73%ile)</span><span class="badge badge-warn">⚠ 간격주의</span><span class="badge badge-mid" title="손병철 데뷔(2026-07-01) 이전, 2026.06까지 임금만 마방 소속이었음">이전: 임금만(2026.06)</span></div>
-      <div class="stat-grid"><div class="stat"><div class="stat-label">등급내백분위</div><div class="stat-value">73%</div></div><div class="stat"><div class="stat-label">레이팅추세</div><div class="stat-value">상승(+1)</div></div><div class="stat"><div class="stat-label">선행성향</div><div class="stat-value">89%</div></div><div class="stat"><div class="stat-label">추입성향</div><div class="stat-value">-13%</div></div></div>
+      <div class="chip-row"><span class="chip">국5등급 · 1800M</span><span class="badge badge-ok" title="현재등급 기준">최적거리 1800M (72%ile)</span><span class="badge badge-warn">⚠ 간격주의</span><span class="badge badge-mid" title="손병철 데뷔(2026-07-01) 이전, 2026.06까지 임금만 마방 소속이었음">이전: 임금만(2026.06)</span></div>
+      <div class="stat-grid"><div class="stat"><div class="stat-label">등급내백분위</div><div class="stat-value">72%</div></div><div class="stat"><div class="stat-label">레이팅추세</div><div class="stat-value">상승(+1)</div></div><div class="stat"><div class="stat-label">선행성향</div><div class="stat-value">89%</div></div><div class="stat"><div class="stat-label">추입성향</div><div class="stat-value">-13%</div></div></div>
       <div class="details">
             <details>
               <summary>거리별 성적 (7개 거리x등급 조합)</summary>
@@ -1351,7 +1122,7 @@
           <td>6위</td>
           <td>국5등급</td>
           <td>31</td>
-          <td><span style="color:var(--good);font-weight:700;">73%</span></td>
+          <td><span style="color:var(--good);font-weight:700;">72%</span></td>
           <td>2026-10-02</td>
         </tr></tbody>
               </table>
@@ -1486,13 +1257,13 @@
     </div>
     <div class="card">
       <div class="card-top">
-        <div class="rank">5</div>
+        <div class="rank">4</div>
         <div class="card-title">
           <div class="hname">위닝트리</div>
           <div class="sub">최근출전 18일 전</div>
           <div class="attention">⚠ 출주간격 짧음(18일)</div>
         </div>
-        <div class="score-pill" style="background:var(--warn)">62.5</div>
+        <div class="score-pill" style="background:var(--warn)">64.2</div>
       </div>
       <div class="chip-row"><span class="chip">국4등급 · 1600M</span><span class="badge badge-mid" title="현재등급 기준 — 비교 가능한 거리 1개뿐(판단 보류 권장, 데이터 더 쌓이면 재평가)">최적거리 1600M (41%ile)</span><span class="badge badge-warn">⚠ 간격주의</span><span class="badge badge-mid" title="손병철 데뷔(2026-07-01) 이전, 2025.11까지 임금만 마방 소속이었음">이전: 임금만(2025.11)</span></div>
       <div class="stat-grid"><div class="stat"><div class="stat-label">등급내백분위</div><div class="stat-value">41%</div></div><div class="stat"><div class="stat-label">레이팅추세</div><div class="stat-value">상승(+7)</div></div><div class="stat"><div class="stat-label">선행성향</div><div class="stat-value">83%</div></div><div class="stat"><div class="stat-label">추입성향</div><div class="stat-value">+8%</div></div></div>
@@ -1645,18 +1416,18 @@
         </tr>
         <tr>
           <td>10</td>
-          <td>대길의꿈</td>
-          <td>구영준</td>
-          <td>대길</td>
+          <td>석세스카우</td>
+          <td>민장기</td>
+          <td>이장현</td>
           <td>48</td>
           <td>+0</td>
           <td>60.0</td>
         </tr>
         <tr>
           <td>11</td>
-          <td>석세스카우</td>
-          <td>민장기</td>
-          <td>이장현</td>
+          <td>대길의꿈</td>
+          <td>구영준</td>
+          <td>대길</td>
           <td>48</td>
           <td>+0</td>
           <td>60.0</td>
@@ -1744,18 +1515,18 @@
         </tr>
         <tr>
           <td>21</td>
-          <td>플라이투더문</td>
-          <td>구영준</td>
-          <td>신윤경</td>
+          <td>서귀레이디</td>
+          <td>김혜선</td>
+          <td>서귀포시축협</td>
           <td>42</td>
           <td>+0</td>
           <td>40.8</td>
         </tr>
         <tr>
           <td>22</td>
-          <td>서귀레이디</td>
-          <td>김혜선</td>
-          <td>서귀포시축협</td>
+          <td>플라이투더문</td>
+          <td>구영준</td>
+          <td>신윤경</td>
           <td>42</td>
           <td>+0</td>
           <td>40.8</td>
@@ -1816,18 +1587,18 @@
         </tr>
         <tr>
           <td>29</td>
-          <td>글로벌하이</td>
-          <td>박재호</td>
-          <td>김준현</td>
+          <td>챔프의사랑</td>
+          <td>손병철</td>
+          <td>류주영</td>
           <td>36</td>
           <td>+0</td>
           <td>19.2</td>
         </tr>
         <tr>
           <td>30</td>
-          <td>챔프의사랑</td>
-          <td>손병철</td>
-          <td>류주영</td>
+          <td>글로벌하이</td>
+          <td>박재호</td>
+          <td>김준현</td>
           <td>36</td>
           <td>+0</td>
           <td>19.2</td>
@@ -1838,13 +1609,13 @@
     </div>
     <div class="card">
       <div class="card-top">
-        <div class="rank">6</div>
+        <div class="rank">5</div>
         <div class="card-title">
           <div class="hname">라임트리</div>
           <div class="sub">최근출전 44일 전</div>
           
         </div>
-        <div class="score-pill" style="background:var(--warn)">59.2</div>
+        <div class="score-pill" style="background:var(--warn)">61.7</div>
       </div>
       <div class="chip-row"><span class="chip">혼3등급 · 1800M</span><span class="badge badge-mid" title="현재등급 기준 — 비교 가능한 거리 1개뿐(판단 보류 권장, 데이터 더 쌓이면 재평가)">최적거리 1800M (46%ile)</span><span class="badge badge-ic">양면형(선행3·추입2)</span><span class="badge badge-mid">보통</span><span class="badge badge-ic">교류 1전</span><span class="badge badge-mid" title="손병철 데뷔(2026-07-01) 이전, 2026.05까지 임금만 마방 소속이었음">이전: 임금만(2026.05)</span></div>
       <div class="stat-grid"><div class="stat"><div class="stat-label">등급내백분위</div><div class="stat-value">72%</div></div><div class="stat"><div class="stat-label">레이팅추세</div><div class="stat-value">유지(+0)</div></div><div class="stat"><div class="stat-label">선행성향</div><div class="stat-value">41%</div></div><div class="stat"><div class="stat-label">추입성향</div><div class="stat-value">+35%</div></div></div>
@@ -1932,7 +1703,7 @@
           <td>4위</td>
           <td>국OPEN</td>
           <td>42</td>
-          <td><span style="color:var(--good);font-weight:700;">86%</span></td>
+          <td><span style="color:var(--bad);font-weight:700;">41%</span></td>
           <td>2025-03-30</td>
         </tr>
         <tr>
@@ -1952,7 +1723,7 @@
           <td>9위</td>
           <td>혼OPEN</td>
           <td>55</td>
-          <td><span style="color:var(--bad);font-weight:700;">5%</span></td>
+          <td><span style="color:var(--bad);font-weight:700;">42%</span></td>
           <td>2026-05-31</td>
         </tr>
         <tr>
@@ -1962,7 +1733,7 @@
           <td>4위</td>
           <td>국OPEN</td>
           <td>42</td>
-          <td><span style="color:var(--good);font-weight:700;">86%</span></td>
+          <td><span style="color:var(--warn);font-weight:700;">50%</span></td>
           <td>2025-05-04</td>
         </tr>
         <tr>
@@ -1992,7 +1763,7 @@
           <td>3위</td>
           <td>국3등급</td>
           <td>55</td>
-          <td><span style="color:var(--bad);font-weight:700;">35%</span></td>
+          <td><span style="color:var(--bad);font-weight:700;">34%</span></td>
           <td>2026-07-12</td>
         </tr>
         <tr>
@@ -2012,7 +1783,7 @@
           <td>5위</td>
           <td>국OPEN</td>
           <td>45</td>
-          <td><span style="color:var(--good);font-weight:700;">86%</span></td>
+          <td><span style="color:var(--good);font-weight:700;">73%</span></td>
           <td>2025-06-08</td>
         </tr></tbody>
               </table>
@@ -2053,18 +1824,18 @@
         </tr>
         <tr>
           <td>4</td>
-          <td>스타대로</td>
-          <td>김도현</td>
-          <td>이종석</td>
+          <td>헤이브라더</td>
+          <td>권승주</td>
+          <td>김무현</td>
           <td>64</td>
           <td>+0</td>
           <td>72.2</td>
         </tr>
         <tr>
           <td>5</td>
-          <td>헤이브라더</td>
-          <td>권승주</td>
-          <td>김무현</td>
+          <td>스타대로</td>
+          <td>김도현</td>
+          <td>이종석</td>
           <td>64</td>
           <td>+0</td>
           <td>72.2</td>
@@ -2080,15 +1851,6 @@
         </tr>
         <tr>
           <td>7</td>
-          <td>마통령</td>
-          <td>문현철</td>
-          <td>김한수</td>
-          <td>60</td>
-          <td>+0</td>
-          <td>61.1</td>
-        </tr>
-        <tr>
-          <td>8</td>
           <td>파워풀배틀</td>
           <td>문현철</td>
           <td>지성배</td>
@@ -2097,19 +1859,28 @@
           <td>61.1</td>
         </tr>
         <tr>
+          <td>8</td>
+          <td>마통령</td>
+          <td>문현철</td>
+          <td>김한수</td>
+          <td>60</td>
+          <td>+0</td>
+          <td>61.1</td>
+        </tr>
+        <tr>
           <td>9</td>
-          <td>센세이셔널윈</td>
-          <td>손병철</td>
-          <td>김혜진</td>
+          <td>카우라인</td>
+          <td>민장기</td>
+          <td>김종업</td>
           <td>59</td>
           <td>+0</td>
           <td>57.4</td>
         </tr>
         <tr>
           <td>10</td>
-          <td>카우라인</td>
-          <td>민장기</td>
-          <td>김종업</td>
+          <td>센세이셔널윈</td>
+          <td>손병철</td>
+          <td>김혜진</td>
           <td>59</td>
           <td>+0</td>
           <td>57.4</td>
@@ -2273,7 +2044,7 @@
     </div>
     <div class="card">
       <div class="card-top">
-        <div class="rank">7</div>
+        <div class="rank">6</div>
         <div class="card-title">
           <div class="hname">퀸메이커</div>
           <div class="sub">최근출전 4일 전</div>
@@ -2337,7 +2108,7 @@
           <td>9위</td>
           <td>국OPEN</td>
           <td>39</td>
-          <td><span style="color:var(--good);font-weight:700;">86%</span></td>
+          <td><span style="color:var(--bad);font-weight:700;">30%</span></td>
           <td>2026-04-05</td>
         </tr>
         <tr>
@@ -2474,13 +2245,13 @@
     </div>
     <div class="card">
       <div class="card-top">
-        <div class="rank">8</div>
+        <div class="rank">7</div>
         <div class="card-title">
           <div class="hname">판타스틱킹덤</div>
           <div class="sub">최근출전 93일 전</div>
           <div class="attention">⚠ 장기 미출전(93일)</div>
         </div>
-        <div class="score-pill" style="background:var(--warn)">52.5</div>
+        <div class="score-pill" style="background:var(--warn)">54.2</div>
       </div>
       <div class="chip-row"><span class="chip">1등급 · 1200M</span><span class="badge badge-ok" title="현재등급 기준">최적거리 1200M (70%ile)</span><span class="badge badge-warn">⚠ 간격주의</span><span class="badge badge-ic">교류 3전</span><span class="badge badge-mid" title="손병철 데뷔(2026-07-01) 이전, 2026.03까지 임금만 마방 소속이었음">이전: 임금만(2026.03)</span></div>
       <div class="stat-grid"><div class="stat"><div class="stat-label">등급내백분위</div><div class="stat-value">70%</div></div><div class="stat"><div class="stat-label">레이팅추세</div><div class="stat-value">유지(+0)</div></div><div class="stat"><div class="stat-label">선행성향</div><div class="stat-value">72%</div></div><div class="stat"><div class="stat-label">추입성향</div><div class="stat-value">-4%</div></div></div>
@@ -2508,7 +2279,7 @@
           <td>1위</td>
           <td>국OPEN</td>
           <td>50</td>
-          <td><span style="color:var(--good);font-weight:700;">100%</span></td>
+          <td><span style="color:var(--good);font-weight:700;">90%</span></td>
           <td>2022-11-06</td>
         </tr>
         <tr>
@@ -2538,7 +2309,7 @@
           <td>3위</td>
           <td>혼OPEN</td>
           <td>100</td>
-          <td><span style="color:var(--good);font-weight:700;">100%</span></td>
+          <td><span style="color:var(--good);font-weight:700;">70%</span></td>
           <td>2026-05-17</td>
         </tr>
         <tr>
@@ -2558,7 +2329,7 @@
           <td>3위</td>
           <td>국OPEN</td>
           <td>56</td>
-          <td><span style="color:var(--good);font-weight:700;">100%</span></td>
+          <td><span style="color:var(--bad);font-weight:700;">45%</span></td>
           <td>2022-12-04</td>
         </tr>
         <tr>
@@ -2578,7 +2349,7 @@
           <td>11위</td>
           <td>혼OPEN</td>
           <td>99</td>
-          <td><span style="color:var(--good);font-weight:700;">96%</span></td>
+          <td><span style="color:var(--good);font-weight:700;">91%</span></td>
           <td>2025-10-26</td>
         </tr>
         <tr>
@@ -2598,7 +2369,7 @@
           <td>12위</td>
           <td>국OPEN</td>
           <td>57</td>
-          <td><span style="color:var(--good);font-weight:700;">100%</span></td>
+          <td><span style="color:var(--warn);font-weight:700;">54%</span></td>
           <td>2023-04-30</td>
         </tr></tbody>
               </table>
@@ -2706,13 +2477,13 @@
     </div>
     <div class="card">
       <div class="card-top">
-        <div class="rank">9</div>
+        <div class="rank">8</div>
         <div class="card-title">
           <div class="hname">셀라이크</div>
           <div class="sub">최근출전 121일 전</div>
           <div class="attention">⚠ 장기 미출전(121일)</div>
         </div>
-        <div class="score-pill" style="background:var(--warn)">50.8</div>
+        <div class="score-pill" style="background:var(--warn)">52.5</div>
       </div>
       <div class="chip-row"><span class="chip">혼4등급 · 1200M</span><span class="badge badge-ok" title="현재등급 기준">최적거리 1200M (64%ile)</span><span class="badge badge-warn">⚠ 간격주의</span><span class="badge badge-mid" title="손병철 데뷔(2026-07-01) 이전, 2026.06까지 임금만 마방 소속이었음">이전: 임금만(2026.06)</span></div>
       <div class="stat-grid"><div class="stat"><div class="stat-label">등급내백분위</div><div class="stat-value">64%</div></div><div class="stat"><div class="stat-label">레이팅추세</div><div class="stat-value">상승(+7)</div></div><div class="stat"><div class="stat-label">선행성향</div><div class="stat-value">59%</div></div><div class="stat"><div class="stat-label">추입성향</div><div class="stat-value">-23%</div></div></div>
@@ -2740,14 +2511,14 @@
           <td>4위</td>
           <td>혼4등급</td>
           <td>40</td>
-          <td><span style="color:var(--bad);font-weight:700;">44%</span></td>
+          <td><span style="color:var(--bad);font-weight:700;">45%</span></td>
           <td>2024-12-27</td>
         </tr></tbody>
               </table>
               </div>
             </details>
             <details>
-              <summary>상대마 비교 (혼4등급 / 1200M — 모집단 28두 중 6위, 전체 28두)</summary>
+              <summary>상대마 비교 (혼4등급 / 1200M — 모집단 31두 중 6위, 전체 31두)</summary>
               <div class="scroll-box">
               <table class="mini-table">
                 <thead><tr><th>순위</th><th>마명</th><th>조교사</th><th>마주</th><th>레이팅</th><th>추세</th><th>조합점수</th></tr></thead>
@@ -2759,7 +2530,7 @@
           <td>손병철</td>
           <td>50</td>
           <td>+7</td>
-          <td>94.6</td>
+          <td>91.9</td>
         </tr>
         <tr>
           <td>2</td>
@@ -2768,7 +2539,7 @@
           <td>권혁희</td>
           <td>49</td>
           <td>+5</td>
-          <td>89.3</td>
+          <td>87.1</td>
         </tr>
         <tr>
           <td>3</td>
@@ -2777,7 +2548,7 @@
           <td>허용권</td>
           <td>48</td>
           <td>+4</td>
-          <td>85.7</td>
+          <td>83.9</td>
         </tr>
         <tr>
           <td>4</td>
@@ -2786,7 +2557,7 @@
           <td>안규생</td>
           <td>46</td>
           <td>+8</td>
-          <td>84.8</td>
+          <td>83.1</td>
         </tr>
         <tr>
           <td>5</td>
@@ -2795,7 +2566,7 @@
           <td>김형란</td>
           <td>47</td>
           <td>+2</td>
-          <td>77.7</td>
+          <td>76.6</td>
         </tr>
         <tr class="is-mine">
           <td>6</td>
@@ -2804,7 +2575,7 @@
           <td>김혜진</td>
           <td>44</td>
           <td>+7</td>
-          <td>75.9</td>
+          <td>75.0</td>
         </tr>
         <tr>
           <td>7</td>
@@ -2813,7 +2584,7 @@
           <td>송문관</td>
           <td>50</td>
           <td>+0</td>
-          <td>70.5</td>
+          <td>69.4</td>
         </tr>
         <tr>
           <td>8</td>
@@ -2822,7 +2593,7 @@
           <td>최종복</td>
           <td>38</td>
           <td>+9</td>
-          <td>68.8</td>
+          <td>67.7</td>
         </tr>
         <tr>
           <td>9</td>
@@ -2831,7 +2602,7 @@
           <td>김정두</td>
           <td>47</td>
           <td>+0</td>
-          <td>62.5</td>
+          <td>62.1</td>
         </tr>
         <tr>
           <td>10</td>
@@ -2840,7 +2611,7 @@
           <td>이정화</td>
           <td>42</td>
           <td>+1</td>
-          <td>58.0</td>
+          <td>58.9</td>
         </tr>
         <tr>
           <td>11</td>
@@ -2849,7 +2620,7 @@
           <td>이경희</td>
           <td>46</td>
           <td>+0</td>
-          <td>58.0</td>
+          <td>58.1</td>
         </tr>
         <tr>
           <td>12</td>
@@ -2858,151 +2629,539 @@
           <td>(주)디알엠씨티</td>
           <td>38</td>
           <td>+1</td>
-          <td>51.8</td>
+          <td>52.4</td>
         </tr>
         <tr>
           <td>13</td>
-          <td>데메테르</td>
-          <td>임성실</td>
-          <td>김종근</td>
-          <td>37</td>
-          <td>+3</td>
-          <td>51.8</td>
-        </tr>
-        <tr>
-          <td>14</td>
           <td>패스트맨</td>
           <td>김도현</td>
           <td>박평양</td>
           <td>44</td>
           <td>+0</td>
-          <td>51.8</td>
+          <td>52.4</td>
+        </tr>
+        <tr>
+          <td>14</td>
+          <td>브이라인</td>
+          <td>민장기</td>
+          <td>김종업</td>
+          <td>30</td>
+          <td></td>
+          <td>51.6</td>
         </tr>
         <tr>
           <td>15</td>
+          <td>오아시스퀸</td>
+          <td>백광열</td>
+          <td>이종훈</td>
+          <td>30</td>
+          <td></td>
+          <td>51.6</td>
+        </tr>
+        <tr>
+          <td>16</td>
+          <td>데메테르</td>
+          <td>임성실</td>
+          <td>김종근</td>
+          <td>37</td>
+          <td>+3</td>
+          <td>51.6</td>
+        </tr>
+        <tr>
+          <td>17</td>
           <td>송정투데이</td>
           <td>유현명</td>
           <td>고정수</td>
           <td>37</td>
           <td>+2</td>
-          <td>49.1</td>
+          <td>49.2</td>
         </tr>
         <tr>
-          <td>16</td>
+          <td>18</td>
           <td>압도적넘버원</td>
           <td>손병직</td>
           <td>김진영a</td>
           <td>47</td>
           <td>-1</td>
-          <td>48.2</td>
+          <td>48.4</td>
         </tr>
         <tr>
-          <td>17</td>
+          <td>19</td>
           <td>플렉스탑</td>
           <td>민장기</td>
           <td>송문관</td>
           <td>42</td>
           <td>+0</td>
-          <td>46.4</td>
+          <td>47.6</td>
         </tr>
         <tr>
-          <td>18</td>
+          <td>20</td>
           <td>퀸즈드래곤</td>
           <td>유현명</td>
           <td>김형란</td>
           <td>41</td>
           <td>+0</td>
-          <td>42.9</td>
+          <td>44.4</td>
         </tr>
         <tr>
-          <td>19</td>
+          <td>21</td>
           <td>닥터시티</td>
           <td>박재호</td>
           <td>권혁희</td>
           <td>45</td>
           <td>-1</td>
+          <td>41.9</td>
+        </tr>
+        <tr>
+          <td>22</td>
+          <td>포텐쏜살</td>
+          <td>라이스</td>
+          <td>홍경표</td>
+          <td>38</td>
+          <td>+0</td>
           <td>41.1</td>
         </tr>
         <tr>
-          <td>20</td>
+          <td>23</td>
           <td>닥터해피</td>
           <td>백광열</td>
           <td>권혁희</td>
           <td>44</td>
           <td>-1</td>
-          <td>37.5</td>
+          <td>38.7</td>
         </tr>
         <tr>
-          <td>21</td>
+          <td>24</td>
           <td>크리스털물결</td>
           <td>임성실</td>
           <td>빅크루즈</td>
           <td>37</td>
           <td>+0</td>
-          <td>33.9</td>
+          <td>34.7</td>
         </tr>
         <tr>
-          <td>22</td>
+          <td>25</td>
           <td>원웨이로드</td>
           <td>민장기</td>
           <td>조경수</td>
           <td>37</td>
           <td>+0</td>
-          <td>33.9</td>
+          <td>34.7</td>
         </tr>
         <tr>
-          <td>23</td>
+          <td>26</td>
           <td>골든</td>
           <td>조용배</td>
           <td>김화원</td>
           <td>42</td>
           <td>-4</td>
-          <td>26.8</td>
+          <td>29.0</td>
         </tr>
         <tr>
-          <td>24</td>
+          <td>27</td>
           <td>윈드로즈</td>
           <td>구영준</td>
           <td>하늬바람</td>
           <td>36</td>
           <td>+0</td>
-          <td>25.9</td>
+          <td>27.4</td>
         </tr>
         <tr>
-          <td>25</td>
+          <td>28</td>
           <td>타이칸선더</td>
           <td>하무선</td>
           <td>최원길</td>
           <td>36</td>
           <td>+0</td>
-          <td>25.9</td>
+          <td>27.4</td>
         </tr>
         <tr>
-          <td>26</td>
+          <td>29</td>
           <td>광속마</td>
           <td>방동석</td>
           <td>(주)디알엠씨티</td>
           <td>36</td>
           <td>+0</td>
-          <td>25.9</td>
+          <td>27.4</td>
         </tr>
         <tr>
-          <td>27</td>
+          <td>30</td>
           <td>차밍보스</td>
           <td>라이스</td>
           <td>정영광</td>
           <td>37</td>
           <td>-1</td>
-          <td>19.6</td>
+          <td>21.0</td>
         </tr>
         <tr>
-          <td>28</td>
+          <td>31</td>
           <td>플래시런</td>
           <td>최기홍</td>
           <td>최상일</td>
           <td>36</td>
           <td>-1</td>
-          <td>11.6</td>
+          <td>13.7</td>
+        </tr></tbody>
+              </table>
+              </div>
+            </details></div>
+    </div>
+    <div class="card">
+      <div class="card-top">
+        <div class="rank">9</div>
+        <div class="card-title">
+          <div class="hname">판타스틱볼트</div>
+          <div class="sub">최근출전 5일 전</div>
+          <div class="attention">⚠ 출주간격 짧음(5일)</div>
+        </div>
+        <div class="score-pill" style="background:var(--bad)">49.2</div>
+      </div>
+      <div class="chip-row"><span class="chip">국OPEN · 1600M</span><span class="badge badge-mid" title="현재등급 기준 — 비교 가능한 거리 1개뿐(판단 보류 권장, 데이터 더 쌓이면 재평가)">최적거리 1600M (30%ile)</span><span class="badge badge-warn">⚠ 간격주의</span><span class="badge badge-mid" title="손병철 데뷔(2026-07-01) 이전, 2026.04까지 임금만 마방 소속이었음">이전: 임금만(2026.04)</span></div>
+      <div class="stat-grid"><div class="stat"><div class="stat-label">등급내백분위</div><div class="stat-value">30%</div></div><div class="stat"><div class="stat-label">레이팅추세</div><div class="stat-value">유지(+0)</div></div><div class="stat"><div class="stat-label">선행성향</div><div class="stat-value">83%</div></div><div class="stat"><div class="stat-label">추입성향</div><div class="stat-value">+2%</div></div></div>
+      <div class="details">
+            <details>
+              <summary>거리별 성적 (5개 거리x등급 조합)</summary>
+              <div class="scroll-box">
+              <table class="mini-table">
+                <thead><tr><th>거리</th><th>출전</th><th>평균순위비율</th><th>최고순위</th><th>등급</th><th>레이팅</th><th>백분위</th><th>최근출전일</th></tr></thead>
+                <tbody>
+        <tr>
+          <td>1200M</td>
+          <td>2전</td>
+          <td>0.41</td>
+          <td>1위</td>
+          <td>국6등급</td>
+          <td></td>
+          <td></td>
+          <td>2025-10-24</td>
+        </tr>
+        <tr>
+          <td>1400M</td>
+          <td>2전</td>
+          <td>0.18</td>
+          <td>1위</td>
+          <td>국5등급</td>
+          <td>29</td>
+          <td><span style="color:var(--bad);font-weight:700;">48%</span></td>
+          <td>2025-12-12</td>
+        </tr>
+        <tr>
+          <td>1600M</td>
+          <td>1전</td>
+          <td>0.50</td>
+          <td>6위</td>
+          <td>국4등급</td>
+          <td>37</td>
+          <td><span style="color:var(--bad);font-weight:700;">12%</span></td>
+          <td>2026-01-25</td>
+        </tr>
+        <tr>
+          <td>1600M</td>
+          <td>1전</td>
+          <td>0.17</td>
+          <td>2위</td>
+          <td>혼4등급</td>
+          <td>37</td>
+          <td><span style="color:var(--bad);font-weight:700;">5%</span></td>
+          <td>2026-03-08</td>
+        </tr>
+        <tr>
+          <td>1600M</td>
+          <td>1전</td>
+          <td>0.75</td>
+          <td>12위</td>
+          <td>국OPEN</td>
+          <td>39</td>
+          <td><span style="color:var(--bad);font-weight:700;">30%</span></td>
+          <td>2026-04-05</td>
+        </tr></tbody>
+              </table>
+              </div>
+            </details>
+            <details>
+              <summary>상대마 비교 (국4등급(OPEN환산, 원등급 국OPEN) / 1600M, 전체 31두)</summary>
+              <div class="scroll-box">
+              <table class="mini-table">
+                <thead><tr><th>순위</th><th>마명</th><th>조교사</th><th>마주</th><th>레이팅</th><th>추세</th><th>조합점수</th></tr></thead>
+                <tbody>
+        <tr>
+          <td>1</td>
+          <td>오케이베이비</td>
+          <td>안우성</td>
+          <td>빅크루즈</td>
+          <td>48</td>
+          <td>+12</td>
+          <td>93.5</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>세광라이트</td>
+          <td>이정표</td>
+          <td>배형진</td>
+          <td>49</td>
+          <td>+6</td>
+          <td>87.1</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>레전드히트</td>
+          <td>방동석</td>
+          <td>김준현</td>
+          <td>50</td>
+          <td>+2</td>
+          <td>85.5</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>플라잉메니스</td>
+          <td>안우성</td>
+          <td>김형순</td>
+          <td>45</td>
+          <td>+8</td>
+          <td>81.5</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>플래시파크</td>
+          <td>최기홍</td>
+          <td>최상일</td>
+          <td>46</td>
+          <td>+1</td>
+          <td>71.8</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>킹스킹</td>
+          <td>권승주</td>
+          <td>정우종합건설(주)</td>
+          <td>44</td>
+          <td>+6</td>
+          <td>71.0</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>위닝트리</td>
+          <td>손병철</td>
+          <td>김지열</td>
+          <td>42</td>
+          <td>+7</td>
+          <td>67.7</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>월드톱티어</td>
+          <td>손병직</td>
+          <td>김진영a</td>
+          <td>49</td>
+          <td>+0</td>
+          <td>65.3</td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>킹블랙</td>
+          <td>토마스</td>
+          <td>김호영</td>
+          <td>39</td>
+          <td>+8</td>
+          <td>62.9</td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td>대길의꿈</td>
+          <td>구영준</td>
+          <td>대길</td>
+          <td>48</td>
+          <td>+0</td>
+          <td>61.3</td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td>석세스카우</td>
+          <td>민장기</td>
+          <td>이장현</td>
+          <td>48</td>
+          <td>+0</td>
+          <td>61.3</td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td>벨로시퀸</td>
+          <td>최기홍</td>
+          <td>이경희</td>
+          <td>38</td>
+          <td>+9</td>
+          <td>60.5</td>
+        </tr>
+        <tr>
+          <td>13</td>
+          <td>석세스퀸</td>
+          <td>민장기</td>
+          <td>이종훈</td>
+          <td>39</td>
+          <td>+7</td>
+          <td>59.7</td>
+        </tr>
+        <tr>
+          <td>14</td>
+          <td>리치트리</td>
+          <td>손병철</td>
+          <td>김지열</td>
+          <td>46</td>
+          <td>+0</td>
+          <td>57.3</td>
+        </tr>
+        <tr>
+          <td>15</td>
+          <td>용비샤크</td>
+          <td>김도현</td>
+          <td>정성진</td>
+          <td>39</td>
+          <td>+4</td>
+          <td>54.0</td>
+        </tr>
+        <tr>
+          <td>16</td>
+          <td>소우굿</td>
+          <td>임금만</td>
+          <td>신윤경</td>
+          <td>45</td>
+          <td>+0</td>
+          <td>53.2</td>
+        </tr>
+        <tr>
+          <td>17</td>
+          <td>포트모어</td>
+          <td>구민성</td>
+          <td>허정완</td>
+          <td>45</td>
+          <td>+0</td>
+          <td>53.2</td>
+        </tr>
+        <tr>
+          <td>18</td>
+          <td>월드댄서캣</td>
+          <td>방동석</td>
+          <td>윤지중</td>
+          <td>44</td>
+          <td>+0</td>
+          <td>49.2</td>
+        </tr>
+        <tr>
+          <td>19</td>
+          <td>포켓밀리언</td>
+          <td>양영남</td>
+          <td>이종훈</td>
+          <td>43</td>
+          <td>+0</td>
+          <td>46.8</td>
+        </tr>
+        <tr>
+          <td>20</td>
+          <td>용암블랙</td>
+          <td>구민성</td>
+          <td>최종하</td>
+          <td>38</td>
+          <td>+1</td>
+          <td>44.4</td>
+        </tr>
+        <tr>
+          <td>21</td>
+          <td>플라이투더문</td>
+          <td>구영준</td>
+          <td>신윤경</td>
+          <td>42</td>
+          <td>+0</td>
+          <td>42.7</td>
+        </tr>
+        <tr>
+          <td>22</td>
+          <td>서귀레이디</td>
+          <td>김혜선</td>
+          <td>서귀포시축협</td>
+          <td>42</td>
+          <td>+0</td>
+          <td>42.7</td>
+        </tr>
+        <tr>
+          <td>23</td>
+          <td>리치원</td>
+          <td>강은석</td>
+          <td>고재완</td>
+          <td>37</td>
+          <td>+1</td>
+          <td>39.5</td>
+        </tr>
+        <tr>
+          <td>24</td>
+          <td>희망로기</td>
+          <td>구민성</td>
+          <td>양철주</td>
+          <td>39</td>
+          <td>+0</td>
+          <td>34.7</td>
+        </tr>
+        <tr>
+          <td>25</td>
+          <td>서부캡틴</td>
+          <td>유현명</td>
+          <td>부준혁</td>
+          <td>42</td>
+          <td>-1</td>
+          <td>28.2</td>
+        </tr>
+        <tr>
+          <td>26</td>
+          <td>미스틱진</td>
+          <td>강은석</td>
+          <td>김혜진</td>
+          <td>37</td>
+          <td>+0</td>
+          <td>25.0</td>
+        </tr>
+        <tr>
+          <td>27</td>
+          <td>부경트리플</td>
+          <td>임금만</td>
+          <td>변공민</td>
+          <td>37</td>
+          <td>+0</td>
+          <td>25.0</td>
+        </tr>
+        <tr>
+          <td>28</td>
+          <td>영광의허니</td>
+          <td>구민성</td>
+          <td>변창덕</td>
+          <td>40</td>
+          <td>-1</td>
+          <td>24.2</td>
+        </tr>
+        <tr>
+          <td>29</td>
+          <td>글로벌하이</td>
+          <td>박재호</td>
+          <td>김준현</td>
+          <td>36</td>
+          <td>+0</td>
+          <td>20.2</td>
+        </tr>
+        <tr>
+          <td>30</td>
+          <td>챔프의사랑</td>
+          <td>손병철</td>
+          <td>류주영</td>
+          <td>36</td>
+          <td>+0</td>
+          <td>20.2</td>
+        </tr>
+        <tr>
+          <td>31</td>
+          <td>그랜드체이서</td>
+          <td>임금만</td>
+          <td>김혜진</td>
+          <td>37</td>
+          <td>-1</td>
+          <td>10.5</td>
         </tr></tbody>
               </table>
               </div>
@@ -3012,310 +3171,11 @@
       <div class="card-top">
         <div class="rank">10</div>
         <div class="card-title">
-          <div class="hname">판타스틱밸류</div>
-          <div class="sub">최근출전 30일 전</div>
-          
-        </div>
-        <div class="score-pill" style="background:var(--bad)">49.2</div>
-      </div>
-      <div class="chip-row"><span class="chip">혼OPEN · 1600M</span><span class="badge badge-ok" title="현재등급 기준">최적거리 1600M (58%ile)</span><span class="badge badge-ok">적정</span><span class="badge badge-ic-win">교류 4전 2승</span><span class="badge badge-mid" title="손병철 데뷔(2026-07-01) 이전, 2026.05까지 임금만 마방 소속이었음">이전: 임금만(2026.05)</span></div>
-      <div class="stat-grid"><div class="stat"><div class="stat-label">등급내백분위</div><div class="stat-value">90%</div></div><div class="stat"><div class="stat-label">레이팅추세</div><div class="stat-value">유지(+0)</div></div><div class="stat"><div class="stat-label">선행성향</div><div class="stat-value">56%</div></div><div class="stat"><div class="stat-label">추입성향</div><div class="stat-value">-10%</div></div></div>
-      <div class="details">
-            <details>
-              <summary>거리별 성적 (15개 거리x등급 조합)</summary>
-              <div class="scroll-box">
-              <table class="mini-table">
-                <thead><tr><th>거리</th><th>출전</th><th>평균순위비율</th><th>최고순위</th><th>등급</th><th>레이팅</th><th>백분위</th><th>최근출전일</th></tr></thead>
-                <tbody>
-        <tr>
-          <td>1200M</td>
-          <td>2전</td>
-          <td>0.14</td>
-          <td>1위</td>
-          <td>국6등급</td>
-          <td></td>
-          <td></td>
-          <td>2024-08-23</td>
-        </tr>
-        <tr>
-          <td>1400M</td>
-          <td>1전</td>
-          <td>0.09</td>
-          <td>1위</td>
-          <td>국5등급</td>
-          <td>31</td>
-          <td><span style="color:var(--good);font-weight:700;">76%</span></td>
-          <td>2024-09-13</td>
-        </tr>
-        <tr>
-          <td>1400M</td>
-          <td>1전</td>
-          <td>0.73</td>
-          <td>8위</td>
-          <td>국4등급</td>
-          <td>42</td>
-          <td><span style="color:var(--warn);font-weight:700;">62%</span></td>
-          <td>2024-10-18</td>
-        </tr>
-        <tr>
-          <td>1400M</td>
-          <td>1전</td>
-          <td>0.18</td>
-          <td>2위</td>
-          <td>2등급</td>
-          <td>66</td>
-          <td><span style="color:var(--bad);font-weight:700;">9%</span></td>
-          <td>2026-02-08</td>
-        </tr>
-        <tr>
-          <td>1400M</td>
-          <td>1전</td>
-          <td>0.06</td>
-          <td>1위</td>
-          <td>혼OPEN</td>
-          <td>68</td>
-          <td><span style="color:var(--bad);font-weight:700;">44%</span></td>
-          <td>2026-04-26</td>
-        </tr>
-        <tr>
-          <td>1400M</td>
-          <td>2전</td>
-          <td>0.44</td>
-          <td>1위</td>
-          <td>국OPEN</td>
-          <td>83</td>
-          <td><span style="color:var(--good);font-weight:700;">100%</span></td>
-          <td>2026-09-20</td>
-        </tr>
-        <tr>
-          <td>1600M</td>
-          <td>1전</td>
-          <td>0.17</td>
-          <td>2위</td>
-          <td>혼4등급</td>
-          <td>42</td>
-          <td><span style="color:var(--bad);font-weight:700;">39%</span></td>
-          <td>2024-12-27</td>
-        </tr>
-        <tr>
-          <td>1600M</td>
-          <td>1전</td>
-          <td>0.08</td>
-          <td>1위</td>
-          <td>국4등급</td>
-          <td>47</td>
-          <td><span style="color:var(--good);font-weight:700;">71%</span></td>
-          <td>2025-01-24</td>
-        </tr>
-        <tr>
-          <td>1600M</td>
-          <td>1전</td>
-          <td>0.08</td>
-          <td>1위</td>
-          <td>국OPEN</td>
-          <td>55</td>
-          <td><span style="color:var(--good);font-weight:700;">86%</span></td>
-          <td>2025-03-30</td>
-        </tr>
-        <tr>
-          <td>1600M</td>
-          <td>1전</td>
-          <td>0.90</td>
-          <td>9위</td>
-          <td>2등급</td>
-          <td>67</td>
-          <td><span style="color:var(--bad);font-weight:700;">18%</span></td>
-          <td>2025-12-21</td>
-        </tr>
-        <tr>
-          <td>1600M</td>
-          <td>1전</td>
-          <td>0.38</td>
-          <td>6위</td>
-          <td>혼OPEN</td>
-          <td>83</td>
-          <td><span style="color:var(--warn);font-weight:700;">58%</span></td>
-          <td>2026-05-31</td>
-        </tr>
-        <tr>
-          <td>1800M</td>
-          <td>1전</td>
-          <td>0.33</td>
-          <td>4위</td>
-          <td>혼3등급</td>
-          <td>55</td>
-          <td><span style="color:var(--bad);font-weight:700;">30%</span></td>
-          <td>2025-03-02</td>
-        </tr>
-        <tr>
-          <td>1800M</td>
-          <td>2전</td>
-          <td>0.46</td>
-          <td>1위</td>
-          <td>국OPEN</td>
-          <td>67</td>
-          <td><span style="color:var(--good);font-weight:700;">100%</span></td>
-          <td>2025-11-23</td>
-        </tr>
-        <tr>
-          <td>1800M</td>
-          <td>1전</td>
-          <td>0.64</td>
-          <td>9위</td>
-          <td>혼OPEN</td>
-          <td>68</td>
-          <td><span style="color:var(--bad);font-weight:700;">0%</span></td>
-          <td>2026-03-22</td>
-        </tr>
-        <tr>
-          <td>2000M</td>
-          <td>1전</td>
-          <td>0.22</td>
-          <td>2위</td>
-          <td>국OPEN</td>
-          <td>67</td>
-          <td><span style="color:var(--good);font-weight:700;">100%</span></td>
-          <td>2025-06-08</td>
-        </tr></tbody>
-              </table>
-              </div>
-            </details>
-            <details>
-              <summary>상대마 비교 (혼OPEN — 모집단 13두 중 7위, 전체 13두)</summary>
-              <div class="scroll-box">
-              <table class="mini-table">
-                <thead><tr><th>순위</th><th>마명</th><th>조교사</th><th>마주</th><th>레이팅</th><th>추세</th><th>조합점수</th></tr></thead>
-                <tbody>
-        <tr>
-          <td>1</td>
-          <td>클린원</td>
-          <td>문현철</td>
-          <td>힐링팜조합</td>
-          <td>118</td>
-          <td></td>
-          <td>92.3</td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>석세스백파</td>
-          <td>민장기</td>
-          <td>이종훈</td>
-          <td>117</td>
-          <td></td>
-          <td>86.5</td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td>스피드영</td>
-          <td>방동석</td>
-          <td>(주)디알엠씨티</td>
-          <td>117</td>
-          <td></td>
-          <td>86.5</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>글로벌히트</td>
-          <td>방동석</td>
-          <td>김준현</td>
-          <td>116</td>
-          <td>+2</td>
-          <td>53.8</td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td>영광의퍼스트</td>
-          <td>강은석</td>
-          <td>변창덕</td>
-          <td>100</td>
-          <td>+5</td>
-          <td>53.8</td>
-        </tr>
-        <tr>
-          <td>6</td>
-          <td>보령라이트퀸</td>
-          <td>김길중</td>
-          <td>최원길</td>
-          <td>95</td>
-          <td>+15</td>
-          <td>53.8</td>
-        </tr>
-        <tr class="is-mine">
-          <td>7</td>
-          <td>판타스틱밸류 ★</td>
-          <td>임금만</td>
-          <td>무지개렌트카</td>
-          <td>83</td>
-          <td>+17</td>
-          <td>50.0</td>
-        </tr>
-        <tr>
-          <td>8</td>
-          <td>오아시스퀸</td>
-          <td>백광열</td>
-          <td>이종훈</td>
-          <td>30</td>
-          <td></td>
-          <td>48.1</td>
-        </tr>
-        <tr>
-          <td>9</td>
-          <td>브이라인</td>
-          <td>민장기</td>
-          <td>김종업</td>
-          <td>30</td>
-          <td></td>
-          <td>48.1</td>
-        </tr>
-        <tr>
-          <td>10</td>
-          <td>맹용</td>
-          <td>유현명</td>
-          <td>이민호</td>
-          <td>85</td>
-          <td>+11</td>
-          <td>46.2</td>
-        </tr>
-        <tr>
-          <td>11</td>
-          <td>투혼의반석</td>
-          <td>라이스</td>
-          <td>임병효</td>
-          <td>96</td>
-          <td>-2</td>
-          <td>34.6</td>
-        </tr>
-        <tr>
-          <td>12</td>
-          <td>벌교마술사</td>
-          <td>임성실</td>
-          <td>유성훈</td>
-          <td>80</td>
-          <td>+0</td>
-          <td>25.0</td>
-        </tr>
-        <tr>
-          <td>13</td>
-          <td>포텐쏜살</td>
-          <td>라이스</td>
-          <td>홍경표</td>
-          <td>38</td>
-          <td>+0</td>
-          <td>21.2</td>
-        </tr></tbody>
-              </table>
-              </div>
-            </details></div>
-    </div>
-    <div class="card">
-      <div class="card-top">
-        <div class="rank">11</div>
-        <div class="card-title">
           <div class="hname">센세이셔널윈</div>
           <div class="sub">최근출전 18일 전</div>
           <div class="attention">⚠ 출주간격 짧음(18일)</div>
         </div>
-        <div class="score-pill" style="background:var(--bad)">47.5</div>
+        <div class="score-pill" style="background:var(--bad)">49.2</div>
       </div>
       <div class="chip-row"><span class="chip">혼3등급 · 1800M</span><span class="badge badge-mid" title="현재등급 기준 — 비교 가능한 거리 1개뿐(판단 보류 권장, 데이터 더 쌓이면 재평가)">최적거리 1800M (56%ile)</span><span class="badge badge-warn">⚠ 간격주의</span><span class="badge badge-mid" title="손병철 데뷔(2026-07-01) 이전, 2026.06까지 임금만 마방 소속이었음">이전: 임금만(2026.06)</span></div>
       <div class="stat-grid"><div class="stat"><div class="stat-label">등급내백분위</div><div class="stat-value">56%</div></div><div class="stat"><div class="stat-label">레이팅추세</div><div class="stat-value">유지(+0)</div></div><div class="stat"><div class="stat-label">선행성향</div><div class="stat-value">59%</div></div><div class="stat"><div class="stat-label">추입성향</div><div class="stat-value">+8%</div></div></div>
@@ -3360,7 +3220,7 @@
               </div>
             </details>
             <details>
-              <summary>상대마 비교 (혼3등급 / 1800M / 건조 — 모집단 27두 중 9위, 전체 27두)</summary>
+              <summary>상대마 비교 (혼3등급 / 1800M / 건조 — 모집단 27두 중 10위, 전체 27두)</summary>
               <div class="scroll-box">
               <table class="mini-table">
                 <thead><tr><th>순위</th><th>마명</th><th>조교사</th><th>마주</th><th>레이팅</th><th>추세</th><th>조합점수</th></tr></thead>
@@ -3394,18 +3254,18 @@
         </tr>
         <tr>
           <td>4</td>
-          <td>스타대로</td>
-          <td>김도현</td>
-          <td>이종석</td>
+          <td>헤이브라더</td>
+          <td>권승주</td>
+          <td>김무현</td>
           <td>64</td>
           <td>+0</td>
           <td>72.2</td>
         </tr>
         <tr>
           <td>5</td>
-          <td>헤이브라더</td>
-          <td>권승주</td>
-          <td>김무현</td>
+          <td>스타대로</td>
+          <td>김도현</td>
+          <td>이종석</td>
           <td>64</td>
           <td>+0</td>
           <td>72.2</td>
@@ -3421,6 +3281,15 @@
         </tr>
         <tr>
           <td>7</td>
+          <td>파워풀배틀</td>
+          <td>문현철</td>
+          <td>지성배</td>
+          <td>52</td>
+          <td>+14</td>
+          <td>61.1</td>
+        </tr>
+        <tr>
+          <td>8</td>
           <td>마통령</td>
           <td>문현철</td>
           <td>김한수</td>
@@ -3429,28 +3298,19 @@
           <td>61.1</td>
         </tr>
         <tr>
-          <td>8</td>
-          <td>파워풀배틀</td>
-          <td>문현철</td>
-          <td>지성배</td>
-          <td>52</td>
-          <td>+14</td>
-          <td>61.1</td>
-        </tr>
-        <tr class="is-mine">
           <td>9</td>
-          <td>센세이셔널윈 ★</td>
-          <td>손병철</td>
-          <td>김혜진</td>
+          <td>카우라인</td>
+          <td>민장기</td>
+          <td>김종업</td>
           <td>59</td>
           <td>+0</td>
           <td>57.4</td>
         </tr>
-        <tr>
+        <tr class="is-mine">
           <td>10</td>
-          <td>카우라인</td>
-          <td>민장기</td>
-          <td>김종업</td>
+          <td>센세이셔널윈 ★</td>
+          <td>손병철</td>
+          <td>김혜진</td>
           <td>59</td>
           <td>+0</td>
           <td>57.4</td>
@@ -3614,13 +3474,13 @@
     </div>
     <div class="card">
       <div class="card-top">
-        <div class="rank">12</div>
+        <div class="rank">11</div>
         <div class="card-title">
           <div class="hname">리치트리</div>
           <div class="sub">최근출전 46일 전</div>
           
         </div>
-        <div class="score-pill" style="background:var(--bad)">45.8</div>
+        <div class="score-pill" style="background:var(--bad)">47.5</div>
       </div>
       <div class="chip-row"><span class="chip">국4등급 · 1600M</span><span class="badge badge-ok" title="현재등급 기준">최적거리 1600M (67%ile)</span><span class="badge badge-mid">보통</span><span class="badge badge-mid" title="손병철 데뷔(2026-07-01) 이전, 2026.05까지 임금만 마방 소속이었음">이전: 임금만(2026.05)</span></div>
       <div class="stat-grid"><div class="stat"><div class="stat-label">등급내백분위</div><div class="stat-value">59%</div></div><div class="stat"><div class="stat-label">레이팅추세</div><div class="stat-value">유지(+0)</div></div><div class="stat"><div class="stat-label">선행성향</div><div class="stat-value">38%</div></div><div class="stat"><div class="stat-label">추입성향</div><div class="stat-value">+14%</div></div></div>
@@ -3833,18 +3693,18 @@
         </tr>
         <tr>
           <td>10</td>
-          <td>대길의꿈</td>
-          <td>구영준</td>
-          <td>대길</td>
+          <td>석세스카우</td>
+          <td>민장기</td>
+          <td>이장현</td>
           <td>48</td>
           <td>+0</td>
           <td>60.0</td>
         </tr>
         <tr>
           <td>11</td>
-          <td>석세스카우</td>
-          <td>민장기</td>
-          <td>이장현</td>
+          <td>대길의꿈</td>
+          <td>구영준</td>
+          <td>대길</td>
           <td>48</td>
           <td>+0</td>
           <td>60.0</td>
@@ -3932,18 +3792,18 @@
         </tr>
         <tr>
           <td>21</td>
-          <td>플라이투더문</td>
-          <td>구영준</td>
-          <td>신윤경</td>
+          <td>서귀레이디</td>
+          <td>김혜선</td>
+          <td>서귀포시축협</td>
           <td>42</td>
           <td>+0</td>
           <td>40.8</td>
         </tr>
         <tr>
           <td>22</td>
-          <td>서귀레이디</td>
-          <td>김혜선</td>
-          <td>서귀포시축협</td>
+          <td>플라이투더문</td>
+          <td>구영준</td>
+          <td>신윤경</td>
           <td>42</td>
           <td>+0</td>
           <td>40.8</td>
@@ -4004,21 +3864,581 @@
         </tr>
         <tr>
           <td>29</td>
-          <td>글로벌하이</td>
-          <td>박재호</td>
-          <td>김준현</td>
-          <td>36</td>
-          <td>+0</td>
-          <td>19.2</td>
-        </tr>
-        <tr>
-          <td>30</td>
           <td>챔프의사랑</td>
           <td>손병철</td>
           <td>류주영</td>
           <td>36</td>
           <td>+0</td>
           <td>19.2</td>
+        </tr>
+        <tr>
+          <td>30</td>
+          <td>글로벌하이</td>
+          <td>박재호</td>
+          <td>김준현</td>
+          <td>36</td>
+          <td>+0</td>
+          <td>19.2</td>
+        </tr></tbody>
+              </table>
+              </div>
+            </details></div>
+    </div>
+    <div class="card">
+      <div class="card-top">
+        <div class="rank">12</div>
+        <div class="card-title">
+          <div class="hname">판타스틱밸류</div>
+          <div class="sub">최근출전 30일 전</div>
+          
+        </div>
+        <div class="score-pill" style="background:var(--bad)">47.5</div>
+      </div>
+      <div class="chip-row"><span class="chip">혼OPEN · 1600M</span><span class="badge badge-ok" title="현재등급 기준">최적거리 1800M (25%ile)</span><span class="badge badge-ok">적정</span><span class="badge badge-ic-win">교류 4전 2승</span><span class="badge badge-mid" title="손병철 데뷔(2026-07-01) 이전, 2026.05까지 임금만 마방 소속이었음">이전: 임금만(2026.05)</span></div>
+      <div class="stat-grid"><div class="stat"><div class="stat-label">등급내백분위</div><div class="stat-value">78%</div></div><div class="stat"><div class="stat-label">레이팅추세</div><div class="stat-value">유지(+0)</div></div><div class="stat"><div class="stat-label">선행성향</div><div class="stat-value">56%</div></div><div class="stat"><div class="stat-label">추입성향</div><div class="stat-value">-10%</div></div></div>
+      <div class="details">
+            <details>
+              <summary>거리별 성적 (15개 거리x등급 조합)</summary>
+              <div class="scroll-box">
+              <table class="mini-table">
+                <thead><tr><th>거리</th><th>출전</th><th>평균순위비율</th><th>최고순위</th><th>등급</th><th>레이팅</th><th>백분위</th><th>최근출전일</th></tr></thead>
+                <tbody>
+        <tr>
+          <td>1200M</td>
+          <td>2전</td>
+          <td>0.14</td>
+          <td>1위</td>
+          <td>국6등급</td>
+          <td></td>
+          <td></td>
+          <td>2024-08-23</td>
+        </tr>
+        <tr>
+          <td>1400M</td>
+          <td>1전</td>
+          <td>0.09</td>
+          <td>1위</td>
+          <td>국5등급</td>
+          <td>31</td>
+          <td><span style="color:var(--good);font-weight:700;">76%</span></td>
+          <td>2024-09-13</td>
+        </tr>
+        <tr>
+          <td>1400M</td>
+          <td>1전</td>
+          <td>0.73</td>
+          <td>8위</td>
+          <td>국4등급</td>
+          <td>42</td>
+          <td><span style="color:var(--warn);font-weight:700;">62%</span></td>
+          <td>2024-10-18</td>
+        </tr>
+        <tr>
+          <td>1400M</td>
+          <td>1전</td>
+          <td>0.18</td>
+          <td>2위</td>
+          <td>2등급</td>
+          <td>66</td>
+          <td><span style="color:var(--bad);font-weight:700;">9%</span></td>
+          <td>2026-02-08</td>
+        </tr>
+        <tr>
+          <td>1400M</td>
+          <td>1전</td>
+          <td>0.06</td>
+          <td>1위</td>
+          <td>혼OPEN</td>
+          <td>68</td>
+          <td><span style="color:var(--bad);font-weight:700;">9%</span></td>
+          <td>2026-04-26</td>
+        </tr>
+        <tr>
+          <td>1400M</td>
+          <td>2전</td>
+          <td>0.44</td>
+          <td>1위</td>
+          <td>국OPEN</td>
+          <td>83</td>
+          <td><span style="color:var(--bad);font-weight:700;">27%</span></td>
+          <td>2026-09-20</td>
+        </tr>
+        <tr>
+          <td>1600M</td>
+          <td>1전</td>
+          <td>0.17</td>
+          <td>2위</td>
+          <td>혼4등급</td>
+          <td>42</td>
+          <td><span style="color:var(--bad);font-weight:700;">39%</span></td>
+          <td>2024-12-27</td>
+        </tr>
+        <tr>
+          <td>1600M</td>
+          <td>1전</td>
+          <td>0.08</td>
+          <td>1위</td>
+          <td>국4등급</td>
+          <td>47</td>
+          <td><span style="color:var(--good);font-weight:700;">71%</span></td>
+          <td>2025-01-24</td>
+        </tr>
+        <tr>
+          <td>1600M</td>
+          <td>1전</td>
+          <td>0.08</td>
+          <td>1위</td>
+          <td>국OPEN</td>
+          <td>55</td>
+          <td><span style="color:var(--bad);font-weight:700;">18%</span></td>
+          <td>2025-03-30</td>
+        </tr>
+        <tr>
+          <td>1600M</td>
+          <td>1전</td>
+          <td>0.90</td>
+          <td>9위</td>
+          <td>2등급</td>
+          <td>67</td>
+          <td><span style="color:var(--bad);font-weight:700;">0%</span></td>
+          <td>2025-12-21</td>
+        </tr>
+        <tr>
+          <td>1600M</td>
+          <td>1전</td>
+          <td>0.38</td>
+          <td>6위</td>
+          <td>혼OPEN</td>
+          <td>83</td>
+          <td><span style="color:var(--bad);font-weight:700;">11%</span></td>
+          <td>2026-05-31</td>
+        </tr>
+        <tr>
+          <td>1800M</td>
+          <td>1전</td>
+          <td>0.33</td>
+          <td>4위</td>
+          <td>혼3등급</td>
+          <td>55</td>
+          <td><span style="color:var(--bad);font-weight:700;">30%</span></td>
+          <td>2025-03-02</td>
+        </tr>
+        <tr>
+          <td>1800M</td>
+          <td>2전</td>
+          <td>0.46</td>
+          <td>1위</td>
+          <td>국OPEN</td>
+          <td>67</td>
+          <td><span style="color:var(--bad);font-weight:700;">20%</span></td>
+          <td>2025-11-23</td>
+        </tr>
+        <tr>
+          <td>1800M</td>
+          <td>1전</td>
+          <td>0.64</td>
+          <td>9위</td>
+          <td>혼OPEN</td>
+          <td>68</td>
+          <td><span style="color:var(--bad);font-weight:700;">25%</span></td>
+          <td>2026-03-22</td>
+        </tr>
+        <tr>
+          <td>2000M</td>
+          <td>1전</td>
+          <td>0.22</td>
+          <td>2위</td>
+          <td>국OPEN</td>
+          <td>67</td>
+          <td><span style="color:var(--bad);font-weight:700;">18%</span></td>
+          <td>2025-06-08</td>
+        </tr></tbody>
+              </table>
+              </div>
+            </details>
+            <details>
+              <summary>상대마 비교 (1등급(OPEN환산, 원등급 혼OPEN) — 모집단 42두 중 22위, 전체 42두)</summary>
+              <div class="scroll-box">
+              <table class="mini-table">
+                <thead><tr><th>순위</th><th>마명</th><th>조교사</th><th>마주</th><th>레이팅</th><th>추세</th><th>조합점수</th></tr></thead>
+                <tbody>
+        <tr>
+          <td>1</td>
+          <td>클린원</td>
+          <td>문현철</td>
+          <td>힐링팜조합</td>
+          <td>118</td>
+          <td></td>
+          <td>97.6</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>스피드영</td>
+          <td>방동석</td>
+          <td>(주)디알엠씨티</td>
+          <td>117</td>
+          <td></td>
+          <td>95.8</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>석세스백파</td>
+          <td>민장기</td>
+          <td>이종훈</td>
+          <td>117</td>
+          <td></td>
+          <td>95.8</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>한강클래스</td>
+          <td>손병직</td>
+          <td>김조은</td>
+          <td>97</td>
+          <td></td>
+          <td>84.5</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>프라임시크릿</td>
+          <td>이상영</td>
+          <td>곽종수</td>
+          <td>99</td>
+          <td>+7</td>
+          <td>79.2</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>글로벌히트</td>
+          <td>방동석</td>
+          <td>김준현</td>
+          <td>116</td>
+          <td>+2</td>
+          <td>77.4</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>영광의퍼스트</td>
+          <td>강은석</td>
+          <td>변창덕</td>
+          <td>100</td>
+          <td>+5</td>
+          <td>76.2</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>보령라이트퀸</td>
+          <td>김길중</td>
+          <td>최원길</td>
+          <td>95</td>
+          <td>+15</td>
+          <td>75.6</td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>그랜드선</td>
+          <td>강은석</td>
+          <td>정순옥</td>
+          <td>89</td>
+          <td></td>
+          <td>68.5</td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td>즐거운여정</td>
+          <td>이상영</td>
+          <td>(주)나스카</td>
+          <td>109</td>
+          <td>+0</td>
+          <td>67.3</td>
+        </tr>
+        <tr>
+          <td>11</td>
+          <td>강서자이언트</td>
+          <td>문현철</td>
+          <td>(주)디알엠씨티</td>
+          <td>105</td>
+          <td>+0</td>
+          <td>65.5</td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td>본다이아</td>
+          <td>권승주</td>
+          <td>손병철</td>
+          <td>105</td>
+          <td>+0</td>
+          <td>65.5</td>
+        </tr>
+        <tr>
+          <td>13</td>
+          <td>비월</td>
+          <td>이상영</td>
+          <td>김상기</td>
+          <td>92</td>
+          <td>+6</td>
+          <td>65.5</td>
+        </tr>
+        <tr>
+          <td>14</td>
+          <td>정문코빗</td>
+          <td>라이스</td>
+          <td>김재영</td>
+          <td>95</td>
+          <td>+3</td>
+          <td>64.9</td>
+        </tr>
+        <tr>
+          <td>15</td>
+          <td>판타스틱킹덤</td>
+          <td>손병철</td>
+          <td>무지개렌트카</td>
+          <td>100</td>
+          <td>+0</td>
+          <td>63.1</td>
+        </tr>
+        <tr>
+          <td>16</td>
+          <td>카디널포스</td>
+          <td>유현명</td>
+          <td>이상진</td>
+          <td>92</td>
+          <td>+5</td>
+          <td>62.5</td>
+        </tr>
+        <tr>
+          <td>17</td>
+          <td>운주가이</td>
+          <td>권승주</td>
+          <td>부수선</td>
+          <td>92</td>
+          <td>+5</td>
+          <td>62.5</td>
+        </tr>
+        <tr>
+          <td>18</td>
+          <td>맹용</td>
+          <td>유현명</td>
+          <td>이민호</td>
+          <td>85</td>
+          <td>+11</td>
+          <td>59.5</td>
+        </tr>
+        <tr>
+          <td>19</td>
+          <td>나이스버디</td>
+          <td>강은석</td>
+          <td>양진호</td>
+          <td>92</td>
+          <td>+1</td>
+          <td>57.1</td>
+        </tr>
+        <tr>
+          <td>20</td>
+          <td>미러클마린</td>
+          <td>최기홍</td>
+          <td>이경희</td>
+          <td>96</td>
+          <td>+0</td>
+          <td>57.1</td>
+        </tr>
+        <tr>
+          <td>21</td>
+          <td>브루크킹맨</td>
+          <td>이상영</td>
+          <td>우만식</td>
+          <td>84</td>
+          <td>+7</td>
+          <td>54.8</td>
+        </tr>
+        <tr class="is-mine">
+          <td>22</td>
+          <td>판타스틱밸류 ★</td>
+          <td>임금만</td>
+          <td>무지개렌트카</td>
+          <td>83</td>
+          <td>+17</td>
+          <td>54.2</td>
+        </tr>
+        <tr>
+          <td>23</td>
+          <td>벌마의몬스터</td>
+          <td>백광열</td>
+          <td>이장현</td>
+          <td>94</td>
+          <td>+0</td>
+          <td>53.0</td>
+        </tr>
+        <tr>
+          <td>24</td>
+          <td>비제이치프</td>
+          <td>라이스</td>
+          <td>이시돌협회</td>
+          <td>84</td>
+          <td>+5</td>
+          <td>50.0</td>
+        </tr>
+        <tr>
+          <td>25</td>
+          <td>스타마타</td>
+          <td>임금만</td>
+          <td>김정두</td>
+          <td>98</td>
+          <td>-1</td>
+          <td>47.0</td>
+        </tr>
+        <tr>
+          <td>26</td>
+          <td>투혼의반석</td>
+          <td>라이스</td>
+          <td>임병효</td>
+          <td>96</td>
+          <td>-2</td>
+          <td>36.9</td>
+        </tr>
+        <tr>
+          <td>27</td>
+          <td>오늘이순간</td>
+          <td>토마스</td>
+          <td>정영광</td>
+          <td>91</td>
+          <td>-1</td>
+          <td>32.7</td>
+        </tr>
+        <tr>
+          <td>28</td>
+          <td>마하타이탄</td>
+          <td>권승주</td>
+          <td>김현우</td>
+          <td>83</td>
+          <td>+0</td>
+          <td>32.1</td>
+        </tr>
+        <tr>
+          <td>29</td>
+          <td>최강쏜살</td>
+          <td>강형곤</td>
+          <td>전종섭</td>
+          <td>83</td>
+          <td>+0</td>
+          <td>32.1</td>
+        </tr>
+        <tr>
+          <td>30</td>
+          <td>원더풀그룸</td>
+          <td>문현철</td>
+          <td>(주)녹원목장</td>
+          <td>90</td>
+          <td>-1</td>
+          <td>31.5</td>
+        </tr>
+        <tr>
+          <td>31</td>
+          <td>디스파이트윈</td>
+          <td>손병철</td>
+          <td>김중길</td>
+          <td>89</td>
+          <td>-1</td>
+          <td>29.8</td>
+        </tr>
+        <tr>
+          <td>32</td>
+          <td>벌교의꿈</td>
+          <td>이상영</td>
+          <td>김은태</td>
+          <td>92</td>
+          <td>-2</td>
+          <td>29.2</td>
+        </tr>
+        <tr>
+          <td>33</td>
+          <td>미스터키맨</td>
+          <td>구민성</td>
+          <td>구영본</td>
+          <td>82</td>
+          <td>+0</td>
+          <td>29.2</td>
+        </tr>
+        <tr>
+          <td>34</td>
+          <td>배틀크라이</td>
+          <td>박재호</td>
+          <td>페가수스</td>
+          <td>88</td>
+          <td>-1</td>
+          <td>28.0</td>
+        </tr>
+        <tr>
+          <td>35</td>
+          <td>킹애니데이</td>
+          <td>임금만</td>
+          <td>김정두</td>
+          <td>81</td>
+          <td>+0</td>
+          <td>27.4</td>
+        </tr>
+        <tr>
+          <td>36</td>
+          <td>파워사운드</td>
+          <td>이상영</td>
+          <td>김종근</td>
+          <td>81</td>
+          <td>+0</td>
+          <td>27.4</td>
+        </tr>
+        <tr>
+          <td>37</td>
+          <td>러브킹이지</td>
+          <td>방동석</td>
+          <td>춘강</td>
+          <td>78</td>
+          <td>+0</td>
+          <td>25.6</td>
+        </tr>
+        <tr>
+          <td>38</td>
+          <td>영스카이워커</td>
+          <td>유현명</td>
+          <td>이일형</td>
+          <td>84</td>
+          <td>-1</td>
+          <td>23.8</td>
+        </tr>
+        <tr>
+          <td>39</td>
+          <td>최고의꿈</td>
+          <td>유현명</td>
+          <td>홍경표</td>
+          <td>84</td>
+          <td>-1</td>
+          <td>23.8</td>
+        </tr>
+        <tr>
+          <td>40</td>
+          <td>오아시스레드</td>
+          <td>백광열</td>
+          <td>이종훈</td>
+          <td>83</td>
+          <td>-1</td>
+          <td>19.0</td>
+        </tr>
+        <tr>
+          <td>41</td>
+          <td>구디</td>
+          <td>안우성</td>
+          <td>이태희</td>
+          <td>67</td>
+          <td>-1</td>
+          <td>11.3</td>
+        </tr>
+        <tr>
+          <td>42</td>
+          <td>서부빅스텝</td>
+          <td>조용배</td>
+          <td>부준혁</td>
+          <td>66</td>
+          <td>-1</td>
+          <td>10.1</td>
         </tr></tbody>
               </table>
               </div>
@@ -4032,7 +4452,7 @@
           <div class="sub">최근출전 58일 전</div>
           <div class="attention">⚠ 레이팅 하락세(-1)</div>
         </div>
-        <div class="score-pill" style="background:var(--bad)">41.7</div>
+        <div class="score-pill" style="background:var(--bad)">43.3</div>
       </div>
       <div class="chip-row"><span class="chip">1등급 · 1800M</span><span class="badge badge-ok" title="현재등급 기준">최적거리 1800M (59%ile)</span><span class="badge badge-mid">보통</span><span class="badge badge-ic">교류 2전</span><span class="badge badge-mid" title="손병철 데뷔(2026-07-01) 이전, 2026.06까지 임금만 마방 소속이었음">이전: 임금만(2026.06)</span></div>
       <div class="stat-grid"><div class="stat"><div class="stat-label">등급내백분위</div><div class="stat-value">59%</div></div><div class="stat"><div class="stat-label">레이팅추세</div><div class="stat-value">하락(-1)</div></div><div class="stat"><div class="stat-label">선행성향</div><div class="stat-value">36%</div></div><div class="stat"><div class="stat-label">추입성향</div><div class="stat-value">+25%</div></div></div>
@@ -4060,7 +4480,7 @@
           <td>1위</td>
           <td>혼4등급</td>
           <td>40</td>
-          <td><span style="color:var(--warn);font-weight:700;">50%</span></td>
+          <td><span style="color:var(--warn);font-weight:700;">53%</span></td>
           <td>2023-09-22</td>
         </tr>
         <tr>
@@ -4080,7 +4500,7 @@
           <td>11위</td>
           <td>혼OPEN</td>
           <td>90</td>
-          <td><span style="color:var(--good);font-weight:700;">100%</span></td>
+          <td><span style="color:var(--bad);font-weight:700;">45%</span></td>
           <td>2025-09-07</td>
         </tr>
         <tr>
@@ -4120,7 +4540,7 @@
           <td>1위</td>
           <td>혼3등급</td>
           <td>63</td>
-          <td><span style="color:var(--good);font-weight:700;">91%</span></td>
+          <td><span style="color:var(--good);font-weight:700;">92%</span></td>
           <td>2025-02-21</td>
         </tr>
         <tr>
@@ -4130,7 +4550,7 @@
           <td>1위</td>
           <td>2등급</td>
           <td>70</td>
-          <td><span style="color:var(--bad);font-weight:700;">27%</span></td>
+          <td><span style="color:var(--bad);font-weight:700;">17%</span></td>
           <td>2025-03-23</td>
         </tr>
         <tr>
@@ -4140,7 +4560,7 @@
           <td>3위</td>
           <td>1등급</td>
           <td>76</td>
-          <td><span style="color:var(--bad);font-weight:700;">9%</span></td>
+          <td><span style="color:var(--bad);font-weight:700;">0%</span></td>
           <td>2025-04-20</td>
         </tr>
         <tr>
@@ -4150,7 +4570,7 @@
           <td>2위</td>
           <td>혼OPEN</td>
           <td>90</td>
-          <td><span style="color:var(--good);font-weight:700;">74%</span></td>
+          <td><span style="color:var(--bad);font-weight:700;">44%</span></td>
           <td>2026-06-28</td>
         </tr>
         <tr>
@@ -4160,7 +4580,7 @@
           <td>8위</td>
           <td>혼OPEN</td>
           <td>90</td>
-          <td><span style="color:var(--bad);font-weight:700;">38%</span></td>
+          <td><span style="color:var(--bad);font-weight:700;">33%</span></td>
           <td>2026-05-24</td>
         </tr>
         <tr>
@@ -4180,7 +4600,7 @@
           <td>10위</td>
           <td>혼OPEN</td>
           <td>90</td>
-          <td><span style="color:var(--bad);font-weight:700;">38%</span></td>
+          <td><span style="color:var(--warn);font-weight:700;">54%</span></td>
           <td>2025-08-03</td>
         </tr>
         <tr>
@@ -4190,7 +4610,7 @@
           <td>1위</td>
           <td>1등급</td>
           <td>89</td>
-          <td><span style="color:var(--warn);font-weight:700;">59%</span></td>
+          <td><span style="color:var(--warn);font-weight:700;">52%</span></td>
           <td>2026-04-19</td>
         </tr></tbody>
               </table>
@@ -4303,20 +4723,20 @@
         </tr>
         <tr>
           <td>12</td>
-          <td>파워사운드</td>
-          <td>이상영</td>
-          <td>김종근</td>
-          <td>81</td>
-          <td>+0</td>
-          <td>38.2</td>
-        </tr>
-        <tr>
-          <td>13</td>
           <td>배틀크라이</td>
           <td>박재호</td>
           <td>페가수스</td>
           <td>88</td>
           <td>-1</td>
+          <td>38.2</td>
+        </tr>
+        <tr>
+          <td>13</td>
+          <td>파워사운드</td>
+          <td>이상영</td>
+          <td>김종근</td>
+          <td>81</td>
+          <td>+0</td>
           <td>38.2</td>
         </tr>
         <tr>
@@ -4367,7 +4787,7 @@
           <div class="sub">최근출전 30일 전</div>
           <div class="attention">⚠ 레이팅 하락세(-1)</div>
         </div>
-        <div class="score-pill" style="background:var(--bad)">40.0</div>
+        <div class="score-pill" style="background:var(--bad)">41.7</div>
       </div>
       <div class="chip-row"><span class="chip">혼3등급 · 1200M</span><span class="badge badge-ok" title="현재등급 기준">최적거리 1400M (64%ile)</span><span class="badge badge-ic">양면형(선행1·추입2)</span><span class="badge badge-ok">적정</span><span class="badge badge-ic">교류 1전</span><span class="badge badge-mid" title="손병철 데뷔(2026-07-01) 이전, 2026.04까지 임금만 마방 소속이었음">이전: 임금만(2026.04)</span></div>
       <div class="stat-grid"><div class="stat"><div class="stat-label">등급내백분위</div><div class="stat-value">43%</div></div><div class="stat"><div class="stat-label">레이팅추세</div><div class="stat-value">하락(-1)</div></div><div class="stat"><div class="stat-label">선행성향</div><div class="stat-value">54%</div></div><div class="stat"><div class="stat-label">추입성향</div><div class="stat-value">+20%</div></div></div>
@@ -4415,7 +4835,7 @@
           <td>3위</td>
           <td>혼4등급</td>
           <td>37</td>
-          <td><span style="color:var(--bad);font-weight:700;">17%</span></td>
+          <td><span style="color:var(--bad);font-weight:700;">19%</span></td>
           <td>2025-07-20</td>
         </tr>
         <tr>
@@ -4811,20 +5231,20 @@
         </tr>
         <tr>
           <td>11</td>
-          <td>내편</td>
-          <td>임성실</td>
-          <td>(주)동화오일</td>
-          <td>45</td>
-          <td>+0</td>
-          <td>62.9</td>
-        </tr>
-        <tr>
-          <td>12</td>
           <td>브리도추추</td>
           <td>문현철</td>
           <td>조수영</td>
           <td>38</td>
           <td></td>
+          <td>62.9</td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td>내편</td>
+          <td>임성실</td>
+          <td>(주)동화오일</td>
+          <td>45</td>
+          <td>+0</td>
           <td>62.9</td>
         </tr>
         <tr>
@@ -5022,10 +5442,10 @@
         <div class="card-title">
           <div class="hname">게임메이커</div>
           <div class="sub">최근출전 4일 전 · <span class="reason">레이팅추세 계산불가(경주이력 부족)</span></div>
-          <div class="attention">⚠ 출주간격 짧음(4일) / 현재등급 하위권(0%ile)</div>
+          <div class="attention">⚠ 출주간격 짧음(4일) / 현재등급 하위권(4%ile)</div>
         </div>
       </div>
-      <div class="chip-row"><span class="chip">국5</span><span class="badge badge-mid" title="현재등급 기준 — 비교 가능한 거리 1개뿐(판단 보류 권장, 데이터 더 쌓이면 재평가)">최적거리 1200M (0%ile)</span><span class="badge badge-ic">양면형(선행2·추입1)</span><span class="badge badge-warn">⚠ 간격주의</span></div>
+      <div class="chip-row"><span class="chip">국5</span><span class="badge badge-mid" title="현재등급 기준 — 비교 가능한 거리 1개뿐(판단 보류 권장, 데이터 더 쌓이면 재평가)">최적거리 1200M (4%ile)</span><span class="badge badge-ic">양면형(선행2·추입1)</span><span class="badge badge-warn">⚠ 간격주의</span></div>
       <div class="stat-grid"><div class="stat"><div class="stat-label">레이팅</div><div class="stat-value">27</div></div><div class="stat"><div class="stat-label">최근출전등급</div><div class="stat-value">국OPEN</div></div><div class="stat"><div class="stat-label">선행성향</div><div class="stat-value">41%</div></div><div class="stat"><div class="stat-label">추입성향</div><div class="stat-value">+27%</div></div></div>
       <div class="details">
             <details>
@@ -5061,7 +5481,7 @@
           <td>9위</td>
           <td>국OPEN</td>
           <td>27</td>
-          <td><span style="color:var(--bad);font-weight:700;">0%</span></td>
+          <td><span style="color:var(--bad);font-weight:700;">4%</span></td>
           <td>2026-10-16</td>
         </tr>
         <tr>
@@ -5073,6 +5493,141 @@
           <td></td>
           <td></td>
           <td>2026-09-11</td>
+        </tr></tbody>
+              </table>
+              </div>
+            </details>
+            <details>
+              <summary>상대마 비교 (국5등급(OPEN환산, 원등급 국OPEN) / 1200M / 양호 — 모집단 14두 중 11위, 전체 14두)</summary>
+              <div class="scroll-box">
+              <table class="mini-table">
+                <thead><tr><th>순위</th><th>마명</th><th>조교사</th><th>마주</th><th>레이팅</th><th>추세</th><th>조합점수</th></tr></thead>
+                <tbody>
+        <tr>
+          <td>1</td>
+          <td>두바이하트</td>
+          <td>임성실</td>
+          <td>빅크루즈</td>
+          <td>35</td>
+          <td></td>
+          <td>83.9</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>빅토리챔프</td>
+          <td>민장기</td>
+          <td>이종훈</td>
+          <td>31</td>
+          <td></td>
+          <td>78.6</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>서니와일드</td>
+          <td>문현철</td>
+          <td>최상일</td>
+          <td>30</td>
+          <td></td>
+          <td>71.4</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>로열프라이드</td>
+          <td>임성실</td>
+          <td>김무현</td>
+          <td>30</td>
+          <td></td>
+          <td>71.4</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>이클립스비전</td>
+          <td>김혜선</td>
+          <td>조한수</td>
+          <td>35</td>
+          <td>+2</td>
+          <td>66.1</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>파워풀워리어</td>
+          <td>토마스</td>
+          <td>(주)녹원목장</td>
+          <td>29</td>
+          <td></td>
+          <td>60.7</td>
+        </tr>
+        <tr>
+          <td>7</td>
+          <td>오아시스기적</td>
+          <td>백광열</td>
+          <td>이장현</td>
+          <td>28</td>
+          <td></td>
+          <td>51.8</td>
+        </tr>
+        <tr>
+          <td>8</td>
+          <td>소파워풀</td>
+          <td>강형곤</td>
+          <td>이혜란</td>
+          <td>28</td>
+          <td></td>
+          <td>51.8</td>
+        </tr>
+        <tr>
+          <td>9</td>
+          <td>닥터애틀랜틱</td>
+          <td>백광열</td>
+          <td>권혁희</td>
+          <td>30</td>
+          <td>+0</td>
+          <td>46.4</td>
+        </tr>
+        <tr>
+          <td>10</td>
+          <td>빅토리타임</td>
+          <td>민장기</td>
+          <td>이장현</td>
+          <td>27</td>
+          <td></td>
+          <td>42.9</td>
+        </tr>
+        <tr class="is-mine">
+          <td>11</td>
+          <td>게임메이커 ★</td>
+          <td>손병철</td>
+          <td>(주)제주플러스</td>
+          <td>27</td>
+          <td></td>
+          <td>42.9</td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td>선더웨이브</td>
+          <td>권승주</td>
+          <td>손병철</td>
+          <td>29</td>
+          <td>+0</td>
+          <td>35.7</td>
+        </tr>
+        <tr>
+          <td>13</td>
+          <td>대길환호</td>
+          <td>강은석</td>
+          <td>대길</td>
+          <td>29</td>
+          <td>+0</td>
+          <td>35.7</td>
+        </tr>
+        <tr>
+          <td>14</td>
+          <td>삼바스텝</td>
+          <td>조용배</td>
+          <td>차청일</td>
+          <td>27</td>
+          <td>-2</td>
+          <td>10.7</td>
         </tr></tbody>
               </table>
               </div>
@@ -5117,6 +5672,429 @@
         </tr></tbody>
               </table>
               </div>
+            </details>
+            <details>
+              <summary>상대마 비교 (국6등급 / 1400M / 건조 — 레이팅 없어 순위 비교 불가, 전체 46두)</summary>
+              <div class="scroll-box">
+              <table class="mini-table">
+                <thead><tr><th>순위</th><th>마명</th><th>조교사</th><th>마주</th><th>레이팅</th><th>추세</th><th>조합점수</th></tr></thead>
+                <tbody>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>원더풀스마트</td>
+          <td>임성실</td>
+          <td>(주)녹원목장</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>퀸오브타이거</td>
+          <td>유현명</td>
+          <td>(주)메타플렉스</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>라이크드래곤</td>
+          <td>유현명</td>
+          <td>(주)메타플렉스</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>대지대봉</td>
+          <td>김도현</td>
+          <td>한정협</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>금아글리밍</td>
+          <td>이상영</td>
+          <td>금아산업(주)</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>동방밴드</td>
+          <td>강형곤</td>
+          <td>범한산업</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>글로벌함안</td>
+          <td>손병직</td>
+          <td>함안군</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>아이엠해피</td>
+          <td>구영준</td>
+          <td>하늬바람</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>레저넌스마린</td>
+          <td>강은석</td>
+          <td>이경희</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>룩스굿</td>
+          <td>임금만</td>
+          <td>신우철</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>푸른신기</td>
+          <td>최기홍</td>
+          <td>이경헌</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>억새</td>
+          <td>조용배</td>
+          <td>차청일</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>유림찬가</td>
+          <td>하무선</td>
+          <td>문애순</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>딥스프린트</td>
+          <td>민장기</td>
+          <td>김지원</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>탱큐포더타임</td>
+          <td>구영준</td>
+          <td>신우철</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>돌풍의중심</td>
+          <td>권승주</td>
+          <td>오종환</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>그린다이내믹</td>
+          <td>박재호</td>
+          <td>김재영</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>금아스터닝</td>
+          <td>이상영</td>
+          <td>금아산업(주)</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>태산신화</td>
+          <td>라이스</td>
+          <td>범한산업</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>판타스틱시티</td>
+          <td>손병철</td>
+          <td>무지개렌트카</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>로스트킹덤</td>
+          <td>유현명</td>
+          <td>태강</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>와일드챔프</td>
+          <td>권승주</td>
+          <td>백용덕</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>원더풀펄핏</td>
+          <td>김혜선</td>
+          <td>지성배</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>샴페인위너</td>
+          <td>임금만</td>
+          <td>양은석</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>드림블루</td>
+          <td>이상영</td>
+          <td>우만식</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>아이스바벨</td>
+          <td>최기홍</td>
+          <td>김명환</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>판타스틱패션</td>
+          <td>임금만</td>
+          <td>무지개렌트카</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>이글마인</td>
+          <td>조용배</td>
+          <td>김근영</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>글로벌톱티어</td>
+          <td>구민성</td>
+          <td>김진영a</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>제로포인트</td>
+          <td>권승주</td>
+          <td>이성인</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>닥터에이트</td>
+          <td>백광열</td>
+          <td>권혁희</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>금빛</td>
+          <td>강형곤</td>
+          <td>이민호</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>다이나믹레몬</td>
+          <td>유현명</td>
+          <td>김병호</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>바이럴히트</td>
+          <td>방동석</td>
+          <td>김준현</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>명품플레이</td>
+          <td>박재호</td>
+          <td>우만식</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>그레이윈드</td>
+          <td>구영준</td>
+          <td>하늬바람</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>빠릿빠릿</td>
+          <td>임성실</td>
+          <td>(주)동화오일</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>위너윈</td>
+          <td>권승주</td>
+          <td>손병현</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>원더풀파</td>
+          <td>양영남</td>
+          <td>지성배</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>에이스러브</td>
+          <td>최기홍</td>
+          <td>(주)대홍에이스건업</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>루비공주</td>
+          <td>구민성</td>
+          <td>그열정그대로</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>회색질주</td>
+          <td>이상영</td>
+          <td>김승진</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-mine is-unranked">
+          <td>–</td>
+          <td>블루트리 ★</td>
+          <td>손병철</td>
+          <td>김지열</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>파워풀케이랜</td>
+          <td>토마스</td>
+          <td>(주)녹원목장</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>로드투스텔스</td>
+          <td>김도현</td>
+          <td>최종복</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>글레디모어</td>
+          <td>구민성</td>
+          <td>허정완</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr></tbody>
+              </table>
+              </div>
             </details></div>
     </div>
     <div class="card card-muted">
@@ -5145,6 +6123,168 @@
           <td></td>
           <td></td>
           <td>2026-06-19</td>
+        </tr></tbody>
+              </table>
+              </div>
+            </details>
+            <details>
+              <summary>상대마 비교 (국6등급 / 1000M / 건조 — 레이팅 없어 순위 비교 불가, 전체 17두)</summary>
+              <div class="scroll-box">
+              <table class="mini-table">
+                <thead><tr><th>순위</th><th>마명</th><th>조교사</th><th>마주</th><th>레이팅</th><th>추세</th><th>조합점수</th></tr></thead>
+                <tbody>
+        <tr class="is-mine is-unranked">
+          <td>–</td>
+          <td>레거시마린 ★</td>
+          <td>임금만</td>
+          <td>이경희</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>모닝아리아</td>
+          <td>이정표</td>
+          <td>김중길</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>톱윈드</td>
+          <td>민장기</td>
+          <td>하늬바람</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>성실질주</td>
+          <td>조용배</td>
+          <td>이동훈</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>월드라이언맨</td>
+          <td>임성실</td>
+          <td>윤지중</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>맥스레벨</td>
+          <td>박재호</td>
+          <td>김조은</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>뉴욕스카이</td>
+          <td>구민성</td>
+          <td>허정완</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>올오케이</td>
+          <td>김도현</td>
+          <td>심상순</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>미라클브레인</td>
+          <td>강형곤</td>
+          <td>이혜란</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>말리카</td>
+          <td>김도현</td>
+          <td>박치권</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>용비선</td>
+          <td>구민성</td>
+          <td>정성진</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>브레스리스</td>
+          <td>구현완</td>
+          <td>김용구</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>모던보이</td>
+          <td>구민성</td>
+          <td>김한수</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>보디앤드소울</td>
+          <td>구영준</td>
+          <td>신윤경</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>환희의길</td>
+          <td>최기홍</td>
+          <td>안규생</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>인디언캐처</td>
+          <td>토마스</td>
+          <td>조아건설(주)</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>비케이액슬</td>
+          <td>강형곤</td>
+          <td>함승원</td>
+          <td></td>
+          <td></td>
+          <td></td>
         </tr></tbody>
               </table>
               </div>
@@ -5203,6 +6343,213 @@
         </tr></tbody>
               </table>
               </div>
+            </details>
+            <details>
+              <summary>상대마 비교 (국6등급 / 1200M / 양호 — 레이팅 없어 순위 비교 불가, 전체 22두)</summary>
+              <div class="scroll-box">
+              <table class="mini-table">
+                <thead><tr><th>순위</th><th>마명</th><th>조교사</th><th>마주</th><th>레이팅</th><th>추세</th><th>조합점수</th></tr></thead>
+                <tbody>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>별빛소나타</td>
+          <td>토마스</td>
+          <td>정영광</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>그랜드라인</td>
+          <td>권승주</td>
+          <td>양진호</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>만세호</td>
+          <td>하무선</td>
+          <td>투애니포</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>파워풀노던</td>
+          <td>문현철</td>
+          <td>(주)녹원목장</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>불패질주</td>
+          <td>강은석</td>
+          <td>손병철</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>슈펙스매직</td>
+          <td>문현철</td>
+          <td>홍애란</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-mine is-unranked">
+          <td>–</td>
+          <td>밀리언트리 ★</td>
+          <td>손병철</td>
+          <td>김지열</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>대길대장</td>
+          <td>강은석</td>
+          <td>대길</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>특별한</td>
+          <td>방동석</td>
+          <td>김조은</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>희망여름</td>
+          <td>이정표</td>
+          <td>최종하</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>토함산스타</td>
+          <td>백광열</td>
+          <td>박웅진</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>우한륭</td>
+          <td>이상영</td>
+          <td>임흥호</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>파워풀인디</td>
+          <td>김혜선</td>
+          <td>(주)녹원목장</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>클러치포터</td>
+          <td>안우성</td>
+          <td>홍애란</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>홀리그레일</td>
+          <td>최기홍</td>
+          <td>손병철</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>퍼펙트서귀</td>
+          <td>윤영훈</td>
+          <td>서귀포시축협</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>스페셜퍼스트</td>
+          <td>민장기</td>
+          <td>강호남</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>비케이리치</td>
+          <td>강형곤</td>
+          <td>함승원</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>멋진파트너</td>
+          <td>구영준</td>
+          <td>투애니포</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>부활의서막</td>
+          <td>구현완</td>
+          <td>이동헌</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>화이트캐슬</td>
+          <td>조용배</td>
+          <td>이계옥</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>하늘여신</td>
+          <td>김도현</td>
+          <td>허도행</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr></tbody>
+              </table>
+              </div>
             </details></div>
     </div>
     <div class="card card-muted">
@@ -5231,6 +6578,276 @@
           <td></td>
           <td></td>
           <td>2026-09-18</td>
+        </tr></tbody>
+              </table>
+              </div>
+            </details>
+            <details>
+              <summary>상대마 비교 (국6등급 / 1000M / 양호 — 레이팅 없어 순위 비교 불가, 전체 29두)</summary>
+              <div class="scroll-box">
+              <table class="mini-table">
+                <thead><tr><th>순위</th><th>마명</th><th>조교사</th><th>마주</th><th>레이팅</th><th>추세</th><th>조합점수</th></tr></thead>
+                <tbody>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>실버모테가</td>
+          <td>임금만</td>
+          <td>양은석</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>시크릿포그</td>
+          <td>라이스</td>
+          <td>강봉한</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>벨라돈나</td>
+          <td>김도현</td>
+          <td>김다혜</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-mine is-unranked">
+          <td>–</td>
+          <td>판타스틱퀸즈 ★</td>
+          <td>손병철</td>
+          <td>무지개렌트카</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>투윈</td>
+          <td>구영준</td>
+          <td>신우철</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>월드크라운캣</td>
+          <td>방동석</td>
+          <td>윤지중</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>로맨틱티아라</td>
+          <td>구영준</td>
+          <td>변공민</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>큐피드골드</td>
+          <td>이상영</td>
+          <td>태립</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>스카이볼트</td>
+          <td>토마스</td>
+          <td>정영광</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>천명의질주</td>
+          <td>김도현</td>
+          <td>강대영</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>레드데블스</td>
+          <td>손병직</td>
+          <td>김진영a</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>에어나이스</td>
+          <td>조용배</td>
+          <td>김근영</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>브라보퀸</td>
+          <td>민장기</td>
+          <td>양정아</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>트리플와이</td>
+          <td>구현완</td>
+          <td>강호정</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>솔내음강</td>
+          <td>안우성</td>
+          <td>정영광</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>프레스퀸</td>
+          <td>손병직</td>
+          <td>김화원</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>위닝와일드</td>
+          <td>최기홍</td>
+          <td>최상일</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>플렉스특급</td>
+          <td>민장기</td>
+          <td>송문관</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>차돌멩이</td>
+          <td>구현완</td>
+          <td>박광순</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>다날다</td>
+          <td>김도현</td>
+          <td>이종석</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>베이스타</td>
+          <td>김도현</td>
+          <td>박평양</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>두바이타임</td>
+          <td>임성실</td>
+          <td>빅크루즈</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>골든밸류</td>
+          <td>조용배</td>
+          <td>김화원</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>글로벌루나</td>
+          <td>손병직</td>
+          <td>김준현</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>와일드메이</td>
+          <td>최기홍</td>
+          <td>최상일</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>온톱</td>
+          <td>양영남</td>
+          <td>신윤경</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>비트원</td>
+          <td>강은석</td>
+          <td>양진영</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>미라클페이스</td>
+          <td>임성실</td>
+          <td>김무현</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>나린아토</td>
+          <td>안우성</td>
+          <td>조경수</td>
+          <td></td>
+          <td></td>
+          <td></td>
         </tr></tbody>
               </table>
               </div>
@@ -5295,6 +6912,168 @@
         </tr></tbody>
               </table>
               </div>
+            </details>
+            <details>
+              <summary>상대마 비교 (국6등급 / 1600M / 양호 — 레이팅 없어 순위 비교 불가, 전체 17두)</summary>
+              <div class="scroll-box">
+              <table class="mini-table">
+                <thead><tr><th>순위</th><th>마명</th><th>조교사</th><th>마주</th><th>레이팅</th><th>추세</th><th>조합점수</th></tr></thead>
+                <tbody>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>샤이니코리아</td>
+          <td>구영준</td>
+          <td>홍종운</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>리스펙팅걸</td>
+          <td>안우성</td>
+          <td>신윤경</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>닥터무적</td>
+          <td>백광열</td>
+          <td>권혁희</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>서귀포리스트</td>
+          <td>강형곤</td>
+          <td>서귀포시축협</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>매직오브퀸</td>
+          <td>임금만</td>
+          <td>신우철</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-mine is-unranked">
+          <td>–</td>
+          <td>판타스틱로열 ★</td>
+          <td>손병철</td>
+          <td>무지개렌트카</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>용비천마</td>
+          <td>김도현</td>
+          <td>정성진</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>스톰프린스</td>
+          <td>김도현</td>
+          <td>함평제일</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>챔프의향기</td>
+          <td>임금만</td>
+          <td>류주영</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>타이거어퍼컷</td>
+          <td>유현명</td>
+          <td>김형란</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>매우</td>
+          <td>이정표</td>
+          <td>이혜란</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>서부리나</td>
+          <td>라이스</td>
+          <td>부준혁</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>루피너스</td>
+          <td>박재호</td>
+          <td>김조은</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>버터크래시</td>
+          <td>하무선</td>
+          <td>청솔</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>영광의크라운</td>
+          <td>강은석</td>
+          <td>변창덕</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>지롤시대</td>
+          <td>민장기</td>
+          <td>장철환</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>낙안추억</td>
+          <td>구영준</td>
+          <td>투애니포</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr></tbody>
+              </table>
+              </div>
             </details></div>
     </div>
     <div class="card card-muted">
@@ -5346,6 +7125,339 @@
         </tr></tbody>
               </table>
               </div>
+            </details>
+            <details>
+              <summary>상대마 비교 (국6등급 / 1300M / 건조 — 레이팅 없어 순위 비교 불가, 전체 36두)</summary>
+              <div class="scroll-box">
+              <table class="mini-table">
+                <thead><tr><th>순위</th><th>마명</th><th>조교사</th><th>마주</th><th>레이팅</th><th>추세</th><th>조합점수</th></tr></thead>
+                <tbody>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>최강치타</td>
+          <td>강형곤</td>
+          <td>전종섭</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>최강플래싱</td>
+          <td>강형곤</td>
+          <td>전종섭</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>다이아엑스</td>
+          <td>안우성</td>
+          <td>김희정</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>무적비행</td>
+          <td>조용배</td>
+          <td>김흥보</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>파이널리위너</td>
+          <td>양영남</td>
+          <td>신윤경</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>희망스피드</td>
+          <td>구민성</td>
+          <td>양철주</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>대성질주</td>
+          <td>하무선</td>
+          <td>청솔</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>스피드범프</td>
+          <td>토마스</td>
+          <td>페가수스</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>매직오브아트</td>
+          <td>구영준</td>
+          <td>신우철</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>매직트리</td>
+          <td>유현명</td>
+          <td>김지열</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>애니윈</td>
+          <td>하무선</td>
+          <td>투애니포</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>퍼플레거시</td>
+          <td>권승주</td>
+          <td>퍼플라인</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>원더풀밴드</td>
+          <td>강형곤</td>
+          <td>범한산업</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>원더풀머드</td>
+          <td>강은석</td>
+          <td>(주)녹원목장</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>라니</td>
+          <td>임성실</td>
+          <td>양승홍</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>동남걸</td>
+          <td>윤영훈</td>
+          <td>함평제일</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>천다이아</td>
+          <td>손병직</td>
+          <td>김근영</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-mine is-unranked">
+          <td>–</td>
+          <td>아트트리 ★</td>
+          <td>손병철</td>
+          <td>김지열</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>파워풀블루문</td>
+          <td>유현명</td>
+          <td>지대섭</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>해피터치</td>
+          <td>이상영</td>
+          <td>최병부</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>보령의태양</td>
+          <td>이정표</td>
+          <td>최원길</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>포더빅토리</td>
+          <td>임금만</td>
+          <td>신윤경</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>히어로히트</td>
+          <td>김혜선</td>
+          <td>김준현</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>골든코드</td>
+          <td>구민성</td>
+          <td>김용구</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>미스코코</td>
+          <td>임성실</td>
+          <td>김용래</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>비케이타이칸</td>
+          <td>강형곤</td>
+          <td>함승원</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>비케이슈터</td>
+          <td>강형곤</td>
+          <td>함승원</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>파워풀히트</td>
+          <td>이상영</td>
+          <td>(주)녹원목장</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>슈퍼위크</td>
+          <td>문현철</td>
+          <td>김한수</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>시에라골드</td>
+          <td>안우성</td>
+          <td>권주순</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>오아시스섀클</td>
+          <td>백광열</td>
+          <td>이종훈</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>장고킹</td>
+          <td>민장기</td>
+          <td>이경희</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>영광의호프</td>
+          <td>토마스</td>
+          <td>변창덕</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>용비오추</td>
+          <td>김도현</td>
+          <td>정성진</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>유니언플래시</td>
+          <td>권승주</td>
+          <td>류주영</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>투투스페이스</td>
+          <td>강형곤</td>
+          <td>강용익</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr></tbody>
+              </table>
+              </div>
             </details></div>
     </div>
     <div class="card card-muted">
@@ -5377,6 +7489,78 @@
         </tr></tbody>
               </table>
               </div>
+            </details>
+            <details>
+              <summary>상대마 비교 (국6등급 / 1200M / 포화 — 레이팅 없어 순위 비교 불가, 전체 7두)</summary>
+              <div class="scroll-box">
+              <table class="mini-table">
+                <thead><tr><th>순위</th><th>마명</th><th>조교사</th><th>마주</th><th>레이팅</th><th>추세</th><th>조합점수</th></tr></thead>
+                <tbody>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>운주러너</td>
+          <td>권승주</td>
+          <td>부수선</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>트리플강자</td>
+          <td>민장기</td>
+          <td>신영미</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>미스터선샤인</td>
+          <td>이상영</td>
+          <td>김은태</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-mine is-unranked">
+          <td>–</td>
+          <td>판타스틱호프 ★</td>
+          <td>손병철</td>
+          <td>무지개렌트카</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>용비엑스</td>
+          <td>강형곤</td>
+          <td>정성진</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>골든클로버</td>
+          <td>김도현</td>
+          <td>김용래</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>선더크러시</td>
+          <td>라이스</td>
+          <td>안슬민</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr></tbody>
+              </table>
+              </div>
             </details></div>
     </div>
     <div class="card card-muted">
@@ -5405,6 +7589,807 @@
           <td></td>
           <td></td>
           <td>2026-02-27</td>
+        </tr></tbody>
+              </table>
+              </div>
+            </details>
+            <details>
+              <summary>상대마 비교 (국6등급 / 1200M, 전체 88두)</summary>
+              <div class="scroll-box">
+              <table class="mini-table">
+                <thead><tr><th>순위</th><th>마명</th><th>조교사</th><th>마주</th><th>레이팅</th><th>추세</th><th>조합점수</th></tr></thead>
+                <tbody>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>퍼펙트플래시</td>
+          <td>김혜선</td>
+          <td>조경수</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>운주대박</td>
+          <td>강은석</td>
+          <td>부수선</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>원더풀테민크</td>
+          <td>손병직</td>
+          <td>지광배</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>별빛소나타</td>
+          <td>토마스</td>
+          <td>정영광</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>그레이트럭키</td>
+          <td>김도현</td>
+          <td>배수한</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>퍼플하트</td>
+          <td>문현철</td>
+          <td>(주)디알엠씨티</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>두바이스타</td>
+          <td>안우성</td>
+          <td>빅크루즈</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>아임더원</td>
+          <td>양영남</td>
+          <td>김무현</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>아이엠퀸</td>
+          <td>이정표</td>
+          <td>이계옥</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>그랜드라인</td>
+          <td>권승주</td>
+          <td>양진호</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>만세호</td>
+          <td>하무선</td>
+          <td>투애니포</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>여수룩앳스타</td>
+          <td>강은석</td>
+          <td>박세완</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>동남석세스</td>
+          <td>강형곤</td>
+          <td>김용구</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>판타스틱치타</td>
+          <td>유현명</td>
+          <td>무지개렌트카</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>모닝크라운</td>
+          <td>강은석</td>
+          <td>김중길</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>퍼펙트라이즈</td>
+          <td>구영준</td>
+          <td>조경수</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>송골매</td>
+          <td>임금만</td>
+          <td>김갑수</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>오아시스로즈</td>
+          <td>백광열</td>
+          <td>이종훈</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>운주러너</td>
+          <td>권승주</td>
+          <td>부수선</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>트리플강자</td>
+          <td>민장기</td>
+          <td>신영미</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>미스터선샤인</td>
+          <td>이상영</td>
+          <td>김은태</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>판타스틱호프</td>
+          <td>손병철</td>
+          <td>무지개렌트카</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>용비엑스</td>
+          <td>강형곤</td>
+          <td>정성진</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>골든클로버</td>
+          <td>김도현</td>
+          <td>김용래</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>선더크러시</td>
+          <td>라이스</td>
+          <td>안슬민</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>희망가을</td>
+          <td>구민성</td>
+          <td>최종하</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>오아시스엔젤</td>
+          <td>백광열</td>
+          <td>이종훈</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>진격의빛</td>
+          <td>조용배</td>
+          <td>이경헌</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>스트롱타이거</td>
+          <td>유현명</td>
+          <td>(주)메타플렉스</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>선더불릿</td>
+          <td>토마스</td>
+          <td>류주영</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>월드투아너맨</td>
+          <td>방동석</td>
+          <td>윤지중</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>토함산엔젤</td>
+          <td>백광열</td>
+          <td>박웅진</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>보령의별</td>
+          <td>임금만</td>
+          <td>최원길</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>블레싱걸</td>
+          <td>안우성</td>
+          <td>신윤경</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>스카이원</td>
+          <td>문현철</td>
+          <td>힐링팜조합</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>성장</td>
+          <td>유현명</td>
+          <td>이민호</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>런포미</td>
+          <td>조용배</td>
+          <td>신우철</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>록뮤직</td>
+          <td>라이스</td>
+          <td>정영식</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>파워풀노던</td>
+          <td>문현철</td>
+          <td>(주)녹원목장</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>불패질주</td>
+          <td>강은석</td>
+          <td>손병철</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>슈펙스매직</td>
+          <td>문현철</td>
+          <td>홍애란</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>밀리언트리</td>
+          <td>손병철</td>
+          <td>김지열</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>대길대장</td>
+          <td>강은석</td>
+          <td>대길</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>특별한</td>
+          <td>방동석</td>
+          <td>김조은</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>희망여름</td>
+          <td>이정표</td>
+          <td>최종하</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>토함산스타</td>
+          <td>백광열</td>
+          <td>박웅진</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>정문큰대박</td>
+          <td>라이스</td>
+          <td>김재영</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>와일드점프</td>
+          <td>최기홍</td>
+          <td>최상일</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>퍼플퀸</td>
+          <td>권승주</td>
+          <td>퍼플라인</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>그린스톰</td>
+          <td>라이스</td>
+          <td>김재영</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>하남명장</td>
+          <td>조용배</td>
+          <td>송한우</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>플레임</td>
+          <td>권승주</td>
+          <td>손병철</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>브리도그린</td>
+          <td>문현철</td>
+          <td>조수영</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>넘버원플레이</td>
+          <td>구영준</td>
+          <td>이동헌</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>하이리턴</td>
+          <td>강형곤</td>
+          <td>이혜란</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>클러치타임</td>
+          <td>토마스</td>
+          <td>조아건설(주)</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>오아시스송</td>
+          <td>백광열</td>
+          <td>이종훈</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>고고챔프</td>
+          <td>권승주</td>
+          <td>정우종합건설(주)</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>블랙위너</td>
+          <td>민장기</td>
+          <td>김욱수</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>히트더러닝</td>
+          <td>방동석</td>
+          <td>김준현</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>블랙퀸즈</td>
+          <td>토마스</td>
+          <td>무지개렌트카</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>서귀클래스</td>
+          <td>윤영훈</td>
+          <td>서귀포시축협</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>대성스카이</td>
+          <td>구민성</td>
+          <td>청솔</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>퍼펙트노던</td>
+          <td>강은석</td>
+          <td>현길림</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>희망겨울</td>
+          <td>구민성</td>
+          <td>최종하</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>페가수스여왕</td>
+          <td>이정표</td>
+          <td>양철주</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>패스트로드</td>
+          <td>이정표</td>
+          <td>이혜란</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>월드플라잉</td>
+          <td>조용배</td>
+          <td>송태형</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>비케이빅에어</td>
+          <td>강형곤</td>
+          <td>함승원</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>판타스틱해피</td>
+          <td>유현명</td>
+          <td>무지개렌트카</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>서귀크라운</td>
+          <td>구영준</td>
+          <td>서귀포시축협</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>서귀브라보</td>
+          <td>강형곤</td>
+          <td>서귀포시축협</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>닥터스파이시</td>
+          <td>백광열</td>
+          <td>권혁희</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>브리도삼손</td>
+          <td>김혜선</td>
+          <td>조수영</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>온누리파티</td>
+          <td>김도현</td>
+          <td>강대영</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>고트맨</td>
+          <td>구민성</td>
+          <td>김진영a</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>라우더</td>
+          <td>권승주</td>
+          <td>손병철</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>우한륭</td>
+          <td>이상영</td>
+          <td>임흥호</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>파워풀인디</td>
+          <td>김혜선</td>
+          <td>(주)녹원목장</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>클러치포터</td>
+          <td>안우성</td>
+          <td>홍애란</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>홀리그레일</td>
+          <td>최기홍</td>
+          <td>손병철</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>퍼펙트서귀</td>
+          <td>윤영훈</td>
+          <td>서귀포시축협</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>스페셜퍼스트</td>
+          <td>민장기</td>
+          <td>강호남</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>비케이리치</td>
+          <td>강형곤</td>
+          <td>함승원</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>멋진파트너</td>
+          <td>구영준</td>
+          <td>투애니포</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>부활의서막</td>
+          <td>구현완</td>
+          <td>이동헌</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>화이트캐슬</td>
+          <td>조용배</td>
+          <td>이계옥</td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="is-unranked">
+          <td>–</td>
+          <td>하늘여신</td>
+          <td>김도현</td>
+          <td>허도행</td>
+          <td></td>
+          <td></td>
+          <td></td>
         </tr></tbody>
               </table>
               </div>

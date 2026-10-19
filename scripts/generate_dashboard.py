@@ -257,17 +257,20 @@ def render_rival_table(rivals: pd.DataFrame) -> str:
     rows = []
     for _, r in rivals.iterrows():
         is_mine = bool(r["우리말여부"])
-        cls = ' class="is-mine"' if is_mine else ""
+        unranked = pd.isna(r["상대순위"])
+        classes = " ".join(c for c in ["is-mine" if is_mine else "", "is-unranked" if unranked else ""] if c)
+        cls = f' class="{classes}"' if classes else ""
         mark = " ★" if is_mine else ""
+        rank_cell = "–" if unranked else int(r["상대순위"])
         rows.append(f"""
         <tr{cls}>
-          <td>{int(r['상대순위'])}</td>
+          <td>{rank_cell}</td>
           <td>{ihtml.escape(str(r['마명']))}{mark}</td>
           <td>{ihtml.escape(str(r['조교사명']))}</td>
           <td>{ihtml.escape(str(r['마주명']))}</td>
-          <td>{r['레이팅_num']:.0f}</td>
+          <td>{'' if pd.isna(r['레이팅_num']) else f"{r['레이팅_num']:.0f}"}</td>
           <td>{'' if pd.isna(r['레이팅추세']) else f"{r['레이팅추세']:+.0f}"}</td>
-          <td>{r['조합점수']:.1f}</td>
+          <td>{'' if pd.isna(r['조합점수']) else f"{r['조합점수']:.1f}"}</td>
         </tr>""")
     return "".join(rows)
 
@@ -298,9 +301,12 @@ def build_detail_blocks(hr_name: str, rivals: pd.DataFrame, distances: pd.DataFr
         if len(sub) > 0:
             bucket_label = ihtml.escape(str(sub.iloc[0]["비교기준"]))
             pop_size = int(sub.iloc[0]["비교모집단규모"])
-            my_rank = int(sub[sub["우리말여부"]].iloc[0]["상대순위"]) if sub["우리말여부"].any() else None
-            all_rivals = sub.sort_values("상대순위")
-            rank_text = f" — 모집단 {pop_size}두 중 {my_rank}위" if my_rank else ""
+            my_row = sub[sub["우리말여부"]]
+            my_rank = (int(my_row.iloc[0]["상대순위"])
+                       if len(my_row) > 0 and pd.notna(my_row.iloc[0]["상대순위"]) else None)
+            all_rivals = sub.sort_values("상대순위", na_position="last")
+            rank_text = f" — 모집단 {pop_size}두 중 {my_rank}위" if my_rank else (
+                " — 레이팅 없어 순위 비교 불가" if len(my_row) > 0 else "")
             rival_block = f"""
             <details>
               <summary>상대마 비교 ({ihtml.escape(bucket_label)}{rank_text}, 전체 {len(all_rivals)}두)</summary>
@@ -373,10 +379,10 @@ def render_scored_card(rank: int, r: pd.Series, insight, rivals: pd.DataFrame, d
     </div>"""
 
 
-def render_unscored_card(r: pd.Series, insight, distances: pd.DataFrame) -> str:
+def render_unscored_card(r: pd.Series, insight, rivals: pd.DataFrame, distances: pd.DataFrame) -> str:
     reason = "레이팅 없음(신마)" if pd.isna(r["최근레이팅"]) else "레이팅추세 계산불가(경주이력 부족)"
     hr_name = ihtml.escape(str(r["마명"]))
-    detail_blocks = build_detail_blocks(r["마명"], pd.DataFrame(), distances)
+    detail_blocks = build_detail_blocks(r["마명"], rivals, distances)
 
     chips = "".join(filter(None, [
         f'<span class="chip">{ihtml.escape(str(r["소속마목록등급"]))}</span>',
@@ -426,7 +432,7 @@ def main():
         for i, (_, r) in enumerate(scored.iterrows(), 1)
     )
     unscored_cards = "".join(
-        render_unscored_card(r, insights_by_name.get(r["마명"]), distances)
+        render_unscored_card(r, insights_by_name.get(r["마명"]), rivals, distances)
         for _, r in unscored.iterrows()
     )
 
@@ -502,6 +508,8 @@ def main():
   .mini-table th {{ position: sticky; top: 0; background: var(--chip-bg); z-index: 1; }}
   .mini-table th, .mini-table td {{ font-size: 11.5px; padding: 5px 8px; text-align: center; border-bottom: 1px solid var(--border); white-space: nowrap; }}
   .mini-table tr.is-mine {{ background: var(--accent-bg); font-weight: 700; }}
+  .mini-table tr.is-unranked {{ color: var(--ink-muted); }}
+  .mini-table tr.is-unranked.is-mine {{ background: var(--chip-bg); }}
 
   .guide {{ background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
             padding: 16px 18px; margin-bottom: 18px; }}
@@ -535,7 +543,7 @@ def main():
   <div class="meta">
     생성 시각: {datetime.now():%Y-%m-%d %H:%M}<br>
     레이팅(백분위+추세) + 러닝스타일(선행+추입) 조합점수, 동등가중 · 백테스트 검증 완료
-    (Spearman -0.3175, 경주단위 1위픽 승률 2.03배 — 단 6~8두 소규모 경주는 표본 부족으로 추가 검증 필요)
+    (Spearman -0.3149, 경주단위 1위픽 승률 2.11배 — 단 6~8두 소규모 경주는 표본 부족으로 추가 검증 필요)
   </div>
 
   <details class="guide" open>
@@ -556,7 +564,7 @@ def main():
 
       <h3>이거 믿을 만한가요?</h3>
       <p>과거 1년치(710개 경주, 7,800여 출전기록)로 검증했습니다. <b>이 점수로 1등을 뽑았을 때, 무작위로 찍었을 때보다 약 2배 더 자주 실제로 우승</b>했습니다
-      (367개 경주 테스트, 승률 21.3% vs 무작위 10.5%). 다만 6~8두짜리 소규모 경주는 아직 표본이 적어 추가 검증이 필요합니다.</p>
+      (367개 경주 테스트, 승률 22.1% vs 무작위 10.5%). 다만 6~8두짜리 소규모 경주는 아직 표본이 적어 추가 검증이 필요합니다.</p>
 
       <h3>배지는 무슨 뜻인가요?</h3>
       <ul>
@@ -571,7 +579,11 @@ def main():
       <h3>카드를 펼치면 뭐가 나오나요?</h3>
       <p>각 말 카드 아래 <b>"거리별 성적"</b>을 펼치면 이 말이 뛰어본 모든 거리·등급에서의 성적을,
       <b>"상대마 비교"</b>를 펼치면 같은 등급·거리·주로상태 조건의 다른 마방 말들과 나란히 순위를 비교해서 볼 수 있습니다
-      (★ 표시 = 우리 말).</p>
+      (★ 표시 = 우리 말). 레이팅이 없는 말(신마·최하위군)도 같은 조건의 상대마 목록 맨 아래에 순위 없이("–") 같이 표시됩니다
+      — 순위는 못 매기지만 어떤 말들과 같이 뛰는지는 보이게 하기 위함입니다.
+      OPEN 경주는 등급이 아니라 "등급 제한 없이 뛰는 경주"라 레이팅이 경주마다 들쭉날쭉이라서,
+      OPEN에서 뛴 말은 실제 레이팅 값으로 번호등급(1~6등급)에 맞춰 환산해서 비교군을 묶습니다
+      (비교 요약에 "국3등급(OPEN환산, 원등급 국OPEN)"처럼 표시됨).</p>
 
       <div class="guide-note">
         ⚠ <b>이 점수는 참고자료입니다.</b> 실제 출마등록(경주 신청)은 조교사가 직접 판단해서 하는 것이고,

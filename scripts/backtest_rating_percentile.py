@@ -17,7 +17,10 @@ from datetime import timedelta
 
 import pandas as pd
 
-from analyze_entry_candidates import _parse_date, _distance_num, load_population
+from analyze_entry_candidates import (
+    _parse_date, _distance_num, attach_matched_grade, build_grade_ceilings, infer_open_grade,
+    load_population,
+)
 
 OUT_CSV = "data/processed/backtest_rating_percentile_results.csv"
 LOOKBACK_DAYS = 180  # analyze_entry_candidates.py의 lookback_months=6과 동일
@@ -26,7 +29,12 @@ MIN_HISTORY_DAYS = 90  # 최소 이만큼의 과거 데이터가 쌓인 시점�
 
 def compute_percentile_asof(target_row, history_pool: pd.DataFrame, distance_tolerance=200):
     """target_row 시점 '이전' 데이터(history_pool)만으로 백분위 계산.
-    analyze_entry_candidates.class_percentile과 동일한 단계적 완화 로직."""
+    analyze_entry_candidates.class_percentile과 동일한 단계적 완화 로직.
+
+    OPEN은 등급이 아니라 '등급 제한 없이 뛰는 경주'라(2026-10-20 확인) 실제 레이팅으로
+    번호등급에 재분류해서 비교군을 묶는다 — 단, lookahead bias 방지 원칙(이 파일 상단 설명)에
+    따라 등급 상한표(ladders)도 history_pool(D 시점 이전 데이터)만으로 만든다. 미래 데이터로
+    만든 상한표를 쓰면 안 됨."""
     grade = target_row["등급"]
     distance = target_row["거리_num"]
     track = target_row["주로상태"]
@@ -35,7 +43,10 @@ def compute_percentile_asof(target_row, history_pool: pd.DataFrame, distance_tol
     if pd.isna(rating) or pd.isna(grade):
         return None, None, 0
 
-    base = history_pool[history_pool["등급"] == grade]
+    ladders = build_grade_ceilings(history_pool)
+    matched_grade = infer_open_grade(rating, grade, ladders)
+    history_matched = attach_matched_grade(history_pool, ladders)
+    base = history_pool[history_matched == matched_grade]
 
     match_level, pool_ratings = None, pd.Series(dtype=float)
 

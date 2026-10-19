@@ -9,17 +9,21 @@ Task #6 백테스트에서 '사전백분위 + 레이팅추세' 조합이 가장 
 """
 import pandas as pd
 
-from analyze_entry_candidates import HORSES_CSV, _distance_num, _parse_date, load_population
+from analyze_entry_candidates import (
+    HORSES_CSV, _distance_num, _parse_date, build_grade_ceilings, infer_open_grade, load_population,
+)
 
 OUT_CSV = "data/processed/rival_comparison.csv"
 LOOKBACK_MONTHS = 6
 
 
 def population_with_trend():
-    """모집단 전체에 대해 레이팅추세(직전 출전 대비)를 계산 — 같은 말의 과거 기록만 사용."""
+    """모집단 전체에 대해 레이팅추세(직전 출전 대비)를 계산 — 같은 말의 과거 기록만 사용.
+    레이팅이 아직 없는 말(신마·최하위군)도 포함한다 — 순위 비교엔 못 쓰지만 "비교군에 같이
+    뛰는 말"로서 상대마 비교 표 맨 아래에 순위없이 보여주기 위함(2026-10-20 사용자 요청)."""
     pop = load_population()
     pop["거리_num"] = pop["거리"].apply(_distance_num)
-    pop = pop.dropna(subset=["경주일자_dt", "레이팅_num", "등급"]).sort_values(
+    pop = pop.dropna(subset=["경주일자_dt", "등급"]).sort_values(
         ["마호_hrNo", "경주일자_dt"])
     pop["직전레이팅"] = pop.groupby("마호_hrNo")["레이팅_num"].shift(1)
     pop["레이팅추세"] = pop["레이팅_num"] - pop["직전레이팅"]
@@ -35,6 +39,11 @@ def main():
 
     cutoff = pd.Timestamp.today() - pd.Timedelta(days=30 * LOOKBACK_MONTHS)
     latest_pop = latest_pop[latest_pop["경주일자_dt"] >= cutoff]
+    # OPEN은 등급이 아니라 '등급 제한 없이 뛰는 경주'라 레이팅이 들쭉날쭉이므로(2026-10-20
+    # 확인), 번호등급(1~6등급) 레이팅 상한표로 재분류한 뒤 그 기준으로 비교군을 묶는다.
+    # latest_pop(말 1두당 1행)보다 표본이 큰 전체 모집단으로 상한표를 만들어야 더 안정적이고,
+    # load_population()이 "등급_매칭" 컬럼을 만들 때 쓴 것과 동일한 기준이라 일관성도 맞는다.
+    ladders = build_grade_ceilings(load_population())
 
     all_rows = []
     for _, h in horses.iterrows():
@@ -59,13 +68,15 @@ def main():
         if len(home_only) > 0:
             hist_sorted = home_only
 
-        my_grade = hist_sorted.iloc[0]["등급"]
+        my_grade_raw = hist_sorted.iloc[0]["등급"]
+        my_rating = pd.to_numeric(h["레이팅"], errors="coerce")  # 소속마 목록의 현재 레이팅(최신)
+        my_grade = infer_open_grade(my_rating, my_grade_raw, ladders)
         my_distance = _distance_num(hist_sorted.iloc[0]["거리"])
         my_track_raw = hist_sorted.iloc[0]["주로"]
         my_track = str(my_track_raw).split("(")[0] if pd.notna(my_track_raw) else None
 
-        bucket = latest_pop[latest_pop["등급"] == my_grade].copy()
-        bucket_label = f"{my_grade}"
+        bucket = latest_pop[latest_pop["등급_매칭"] == my_grade].copy()
+        bucket_label = f"{my_grade}" + (f"(OPEN환산, 원등급 {my_grade_raw})" if my_grade != my_grade_raw else "")
         if my_distance is not None:
             same_d = bucket[bucket["거리_num"] == my_distance]
             if len(same_d) >= 5:
@@ -81,12 +92,18 @@ def main():
             continue
 
         bucket = bucket.copy()
+        has_rating = bucket["레이팅_num"].notna()
         bucket["백분위"] = bucket["레이팅_num"].rank(pct=True) * 100
         bucket["추세백분위"] = bucket["레이팅추세"].rank(pct=True, na_option="bottom") * 100
         bucket["조합점수"] = bucket[["백분위", "추세백분위"]].mean(axis=1)
-        bucket = bucket.sort_values("조합점수", ascending=False).reset_index(drop=True)
-        bucket["상대순위"] = bucket.index + 1
-        bucket["비교모집단규모"] = len(bucket)
+        # 레이팅 없는 말(신마·최하위군)은 백분위/조합점수를 아예 매길 수 없으므로 전부 공란 처리 —
+        # 정렬 시 판다스 기본 동작(NaN이 끝으로 감)으로 자동으로 맨 아래에 깔린다.
+        bucket.loc[~has_rating, ["백분위", "추세백분위", "조합점수"]] = pd.NA
+        bucket = bucket.sort_values("조합점수", ascending=False, na_position="last").reset_index(drop=True)
+        ranked = bucket["조합점수"].notna()
+        bucket["상대순위"] = pd.NA
+        bucket.loc[ranked, "상대순위"] = range(1, int(ranked.sum()) + 1)
+        bucket["비교모집단규모"] = int(ranked.sum())
         bucket["비교기준"] = bucket_label
         bucket["기준말_마번"] = hr_no
         bucket["기준말_마명"] = hr_name
