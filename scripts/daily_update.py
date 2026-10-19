@@ -97,24 +97,28 @@ def main():
         ["scripts/scrape_horse_history.py",
          "--horses-csv", "data/processed/손병철_11조_소속마.csv", "--meet", MEET, "--delay", "0.5"],
     )
-    results["경주결과 증분수집"] = run_step(
-        "3/8 부산경남 경주결과 증분수집",
+    results["경주결과 증분수집(부경)"] = run_step(
+        "3/9 부산경남 경주결과 증분수집",
         ["scripts/scrape_race_results.py", "--incremental", "--delay", "0.4"],
     )
+    results["경주결과 증분수집(영천)"] = run_step(
+        "4/9 영천 경주결과 증분수집",
+        ["scripts/scrape_race_results.py", "--meet", "4", "--incremental", "--delay", "0.4"],
+    )
     results["최종점수 재계산"] = run_step(
-        "4/8 최종 출마등록 점수 재계산", ["scripts/final_entry_score.py"],
+        "5/9 최종 출마등록 점수 재계산", ["scripts/final_entry_score.py"],
     )
     results["상대마 비교 재계산"] = run_step(
-        "5/8 상대마 비교표 재계산", ["scripts/rival_comparison.py"],
+        "6/9 상대마 비교표 재계산", ["scripts/rival_comparison.py"],
     )
     results["거리별 분해 재계산"] = run_step(
-        "6/8 거리별 성적 분해 재계산", ["scripts/distance_breakdown.py"],
+        "7/9 거리별 성적 분해 재계산", ["scripts/distance_breakdown.py"],
     )
     results["말별 인사이트 재계산"] = run_step(
-        "7/8 최적거리·양면형·주의사항 재계산", ["scripts/horse_insights.py"],
+        "8/9 최적거리·양면형·주의사항 재계산", ["scripts/horse_insights.py"],
     )
     results["대시보드 재생성"] = run_step(
-        "8/8 대시보드 HTML 재생성", ["scripts/generate_dashboard.py"],
+        "9/9 대시보드 HTML 재생성", ["scripts/generate_dashboard.py"],
     )
 
     print(f"\n{'='*50}\n[GitHub Pages 배포] 시작\n{'='*50}", flush=True)

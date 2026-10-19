@@ -10,7 +10,8 @@ Task #6 백테스트에서 '사전백분위 + 레이팅추세' 조합이 가장 
 import pandas as pd
 
 from analyze_entry_candidates import (
-    HORSES_CSV, _distance_num, _parse_date, build_grade_ceilings, infer_open_grade, load_population,
+    HORSES_CSV, _distance_num, _parse_date, build_grade_ceilings, home_filter, infer_open_grade,
+    load_population,
 )
 
 OUT_CSV = "data/processed/rival_comparison.csv"
@@ -59,14 +60,13 @@ def main():
         if len(hist_sorted) == 0:
             continue
 
-        # 모집단(latest_pop)은 부산경남(meet=3) 데이터로만 만들어지므로, 비교 기준이 되는
-        # '내 등급/거리/주로'도 반드시 부산경남 내 최근 경주에서 뽑아야 한다. 안 그러면
+        # 모집단(latest_pop)은 부산경남+영천(meet=3,4) 데이터로 만들어지므로, 비교 기준이
+        # 되는 '내 등급/거리/주로'도 반드시 그 범위 내 최근 경주에서 뽑아야 한다. 안 그러면
         # 말의 '전체 최근 경주'가 서울/제주 교류경주일 때 그 말이 자기 모집단에서 빠지는
         # 버그가 생김(2026-10-18 발견: 판타스틱밸류가 서울 교류경주 등급 기준으로 조회되어
         # 정작 부산경남 모집단엔 다른 등급으로 들어가있어 본인이 검색 안 됨).
-        home_only = hist_sorted[hist_sorted["교류경주"] != "Y"]
-        if len(home_only) > 0:
-            hist_sorted = home_only
+        # home_filter()가 영천은 원정으로 치지 않는다(2026-10-20 확인).
+        hist_sorted = home_filter(hist_sorted)
 
         my_grade_raw = hist_sorted.iloc[0]["등급"]
         my_rating = pd.to_numeric(h["레이팅"], errors="coerce")  # 소속마 목록의 현재 레이팅(최신)

@@ -14,6 +14,12 @@
 
     # 이후 증분 수집 (상태 파일 기준 이어서)
     python scripts/scrape_race_results.py --incremental
+
+    # 영천(meet=4) -- 2026-10-20 확인: 현재 서울이 영천 참가를 안 해서 영천 경주는 사실상
+    # 전부 부산경남 말들끼리의 경주라 모집단에 같이 합친다(analyze_entry_candidates.load_population
+    # 참고). race_meta_4.csv/race_field_4.csv로 별도 저장, 상태파일도 분리.
+    python scripts/scrape_race_results.py --meet 4 --months 12
+    python scripts/scrape_race_results.py --meet 4 --incremental
 """
 import argparse
 import csv
@@ -177,15 +183,28 @@ def parse_sectional_table(tbody: str) -> dict:
     return result
 
 
-def _load_state() -> dict:
-    if STATE_PATH.exists():
-        return json.loads(STATE_PATH.read_text(encoding="utf-8"))
+def _state_path(meet: str) -> Path:
+    """meet별로 상태 파일을 분리한다(부경/영천 수집 날짜가 섞이면 증분 수집이 서로 꼬인다).
+    meet=3은 기존 race_results_state.json을 그대로 계속 쓴다(하위호환 — 이미 91개 날짜가
+    기록돼있는데 새 이름으로 바꾸면 전체 재수집을 시도해서 중복 행이 쌓인다)."""
+    suffixed = Path(f"data/processed/race_results_state_{meet}.json")
+    legacy = Path("data/processed/race_results_state.json")
+    if meet == "3" and not suffixed.exists() and legacy.exists():
+        return legacy
+    return suffixed
+
+
+def _load_state(meet: str) -> dict:
+    path = _state_path(meet)
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
     return {"collected_dates": []}
 
 
-def _save_state(state: dict):
-    STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
-    STATE_PATH.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
+def _save_state(meet: str, state: dict):
+    path = _state_path(meet)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def main():
@@ -198,7 +217,7 @@ def main():
     args = parser.parse_args()
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    state = _load_state()
+    state = _load_state(args.meet)
     collected = set(state["collected_dates"])
 
     cutoff = None
@@ -269,7 +288,7 @@ def main():
         total_field += len(day_field)
         collected.add(rc_date)
         state["collected_dates"] = sorted(collected)
-        _save_state(state)
+        _save_state(args.meet, state)
 
     print(f"\n경주 {total_meta}건, 출전기록 {total_field}건 수집 완료", flush=True)
     print(f"-> {meta_path}\n-> {field_path}", flush=True)

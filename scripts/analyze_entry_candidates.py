@@ -16,14 +16,19 @@
 """
 import re
 from datetime import date
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
 
 HORSES_CSV = "data/processed/손병철_11조_소속마.csv"
 HISTORY_CSV = "data/raw/race_history/race_history_combined.csv"
-META_CSV = "data/raw/race_results/race_meta_3.csv"
-FIELD_CSV = "data/raw/race_results/race_field_3.csv"
+RACE_RESULTS_DIR = "data/raw/race_results"
+# 모집단에 포함할 meet 코드. 3=부산경남(홈), 4=영천.
+# 2026-10-20 확인: 현재 서울이 영천 참가를 안 해서 영천 경주는 사실상 전부 부산경남 말들끼리의
+# 경주라 "원정"이 아니라 장소만 다른 부산경남 경주로 보고 같이 합친다. 서울이 영천에 복귀하면
+# 방문마 필터([서] 접두사, load_population 참고)가 그 말들을 자동으로 걸러낸다.
+POPULATION_MEETS = ["3", "4"]
 OUT_CSV = "data/processed/entry_candidates_rating_analysis.csv"
 
 
@@ -124,6 +129,20 @@ def attach_matched_grade(df: pd.DataFrame, ladders: dict) -> pd.Series:
     return out
 
 
+def home_filter(h: pd.DataFrame) -> pd.DataFrame:
+    """'홈(부산경남) 조건'으로 취급할 행만 남긴다 — 교류경주라도 영천(meet=4)은 원정으로
+    치지 않는다. 2026-10-20 사용자 확인: 현재 서울이 영천 참가를 안 해서 영천 경주는 사실상
+    전부 부산경남 말들끼리의 경주다(POPULATION_MEETS 선언부 설명과 동일한 근거). 서울/제주 등
+    실제 타지역 원정만 제외한다. (조건을 만족하는 행이 하나도 없으면 원본을 그대로 반환.)"""
+    if "교류경주" not in h.columns:
+        return h
+    is_away = h["교류경주"] == "Y"
+    if "개최지" in h.columns:
+        is_away = is_away & (h["개최지"] != "영천")
+    home_only = h[~is_away]
+    return home_only if len(home_only) > 0 else h
+
+
 def load_population():
     """부산경남 '소속' 말들의 경주결과(타 마방 포함)를 날짜+등급+거리+주로상태+레이팅으로 정리.
 
@@ -134,11 +153,24 @@ def load_population():
     등급에서 모집단 대부분이 방문마로 채워져 비교 자체가 왜곡된다(판타스틱밸류 사례: 17두
     중 13두가 서울말이었음). 조교사 명단 대조 방식은 활동 조교사 명단을 수동으로 관리해야
     해서 오히려 부정확했고(활동 중인 임성실 등을 누락), 마명 접두사가 KRA가 직접 표기하는
-    더 정확한 신호다."""
-    meta = pd.read_csv(META_CSV, dtype=str)
-    field = pd.read_csv(FIELD_CSV, dtype=str)
-    pop = field.merge(meta[["경주일자", "경주번호", "등급", "거리", "주로상태"]],
-                       on=["경주일자", "경주번호"], how="left", suffixes=("", "_meta"))
+    더 정확한 신호다.
+
+    2026-10-20부터 meet=4(영천)도 합친다 — 현재 서울이 영천 참가를 안 해서 영천 경주는
+    사실상 전부 부산경남 말들끼리의 경주다(POPULATION_MEETS 선언부 설명 참고). meet별로
+    따로 merge한 뒤 합쳐서, 혹시 모를 (경주일자,경주번호) 충돌을 피한다."""
+    pop_parts = []
+    for meet in POPULATION_MEETS:
+        meta_path = Path(RACE_RESULTS_DIR) / f"race_meta_{meet}.csv"
+        field_path = Path(RACE_RESULTS_DIR) / f"race_field_{meet}.csv"
+        if not meta_path.exists() or not field_path.exists():
+            continue
+        meta = pd.read_csv(meta_path, dtype=str)
+        field = pd.read_csv(field_path, dtype=str)
+        merged = field.merge(meta[["경주일자", "경주번호", "등급", "거리", "주로상태"]],
+                              on=["경주일자", "경주번호"], how="left", suffixes=("", "_meta"))
+        merged["수집meet"] = meet
+        pop_parts.append(merged)
+    pop = pd.concat(pop_parts, ignore_index=True)
     pop = pop[~pop["마명"].str.match(r"^\[.\]", na=False)]
     pop["레이팅_num"] = pd.to_numeric(pop["레이팅"], errors="coerce")
     pop["경주일자_dt"] = pop["경주일자"].apply(_parse_date)
@@ -255,15 +287,12 @@ def class_percentile(history: pd.DataFrame, population: pd.DataFrame, current_ra
         return {"최근출전등급": None, "최근출전거리": None, "최근주로상태": None,
                 "등급내백분위": None, "비교모집단수": 0}
 
-    # population(모집단)은 부산경남(meet=3) 데이터로만 구성되므로, 비교 기준이 되는
-    # 등급/거리/주로도 반드시 부산경남 내 최근 경주에서 뽑아야 한다 — 그렇지 않으면 말의
+    # population(모집단)은 부산경남+영천(meet=3,4) 데이터로 구성되므로, 비교 기준이 되는
+    # 등급/거리/주로도 반드시 그 범위 내 최근 경주에서 뽑아야 한다 — 그렇지 않으면 말의
     # '전체 최근 경주'가 서울/제주 교류경주일 때 모집단 매칭 기준 자체가 어긋난다
     # (2026-10-18 발견: 판타스틱밸류가 서울 교류경주 등급으로 매칭되어 실제 부산경남
-    # 성적과 다른 조건으로 비교되고 있었음).
-    if "교류경주" in h.columns:
-        home_only = h[h["교류경주"] != "Y"]
-        if len(home_only) > 0:
-            h = home_only
+    # 성적과 다른 조건으로 비교되고 있었음). home_filter()가 영천은 원정으로 치지 않는다.
+    h = home_filter(h)
 
     recent_grade = h.iloc[0]["등급"]
     recent_distance = _distance_num(h.iloc[0]["거리"])
