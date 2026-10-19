@@ -9,16 +9,168 @@
     (생성 후 data/dashboard.html 더블클릭해서 열기)
 """
 import html as ihtml
+import sys
 from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
 
+sys.path.insert(0, "scripts")
+from analyze_entry_candidates import load_population  # noqa: E402
+
 SCORE_CSV = "data/processed/final_entry_score.csv"
 RIVAL_CSV = "data/processed/rival_comparison.csv"
 DISTANCE_CSV = "data/processed/distance_breakdown.csv"
 INSIGHTS_CSV = "data/processed/horse_insights.csv"
+HISTORY_CSV = "data/raw/race_history/race_history_combined.csv"
 OUT_HTML = Path("data/dashboard.html")
+
+# dataviz 스킬 참조 팔레트(검증된 기본 팔레트) 카테고리 슬롯1(파랑)/슬롯2(주황) — 인접쌍 CVD 기준 통과
+CHART_COLOR_OURS = "#2a78d6"
+CHART_COLOR_POP = "#eb6834"
+HOME_TRAINER = "손병철"
+
+
+def month_label(ym: str) -> str:
+    return f"{int(ym[4:6])}월"
+
+
+def compute_trainer_trend():
+    """손병철 데뷔(2026-07-01) 이후 월별 '손병철 vs 전체 조교사 풀링평균' 승률/복승률."""
+    pop = load_population()
+    pop["순위_num"] = pd.to_numeric(pop["순위"], errors="coerce")
+    pop = pop.dropna(subset=["순위_num"])
+    pop["월"] = pop["경주일자"].str[:6]
+    debut_month = "202607"
+    pop = pop[pop["월"] >= debut_month]
+
+    def agg(g):
+        n = len(g)
+        return pd.Series({
+            "출주": n,
+            "승률": round((g["순위_num"] == 1).mean() * 100, 1),
+            "복승률": round((g["순위_num"] <= 3).mean() * 100, 1),
+        })
+
+    sb = pop[pop["조교사명"] == HOME_TRAINER].groupby("월").apply(agg, include_groups=False)
+    allp = pop.groupby("월").apply(agg, include_groups=False)
+    months = sorted(set(sb.index) | set(allp.index))
+    return months, sb, allp
+
+
+def build_trend_svg(months, ours_vals, pop_vals, ours_n, title) -> str:
+    w, h = 460, 190
+    pad_l, pad_r, pad_t, pad_b = 34, 52, 14, 26
+    plot_w, plot_h = w - pad_l - pad_r, h - pad_t - pad_b
+
+    all_vals = [v for v in ours_vals + pop_vals if v is not None]
+    y_max = max(10, max(all_vals) * 1.15) if all_vals else 10
+    y_min = 0
+
+    def x_of(i):
+        return pad_l + (i / max(1, len(months) - 1)) * plot_w if len(months) > 1 else pad_l + plot_w / 2
+
+    def y_of(v):
+        return pad_t + plot_h - ((v - y_min) / (y_max - y_min)) * plot_h
+
+    def make_line(vals, color, labels=None):
+        pts = [(i, v) for i, v in enumerate(vals) if v is not None]
+        if len(pts) == 0:
+            return ""
+        path = " ".join(f"{'M' if i == 0 else 'L'}{x_of(xi):.1f},{y_of(v):.1f}" for i, (xi, v) in enumerate(pts))
+        line = f'<path d="{path}" fill="none" stroke="{color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>'
+        dots = ""
+        for xi, v in pts:
+            tip = f"{month_label(months[xi])}: {v:.1f}%"
+            if labels is not None:
+                tip += f" ({labels[xi]}건)"
+            dots += (f'<circle cx="{x_of(xi):.1f}" cy="{y_of(v):.1f}" r="4" fill="{color}">'
+                     f'<title>{ihtml.escape(tip)}</title></circle>')
+        return line + dots
+
+    gridlines = ""
+    for frac in (0, 0.5, 1.0):
+        gy = pad_t + plot_h * (1 - frac)
+        gval = y_min + (y_max - y_min) * frac
+        gridlines += (f'<line x1="{pad_l}" y1="{gy:.1f}" x2="{w-pad_r}" y2="{gy:.1f}" '
+                      f'stroke="var(--chart-grid)" stroke-width="1"/>'
+                      f'<text x="{pad_l-6}" y="{gy+3:.1f}" text-anchor="end" font-size="9" '
+                      f'fill="var(--chart-muted)">{gval:.0f}%</text>')
+
+    x_labels = "".join(
+        f'<text x="{x_of(i):.1f}" y="{h-8}" text-anchor="middle" font-size="10" '
+        f'fill="var(--chart-muted)">{month_label(m)}</text>'
+        for i, m in enumerate(months)
+    )
+
+    ours_line = make_line(ours_vals, CHART_COLOR_OURS, ours_n)
+    pop_line = make_line(pop_vals, CHART_COLOR_POP)
+
+    # 마지막 유효점 옆에 직접 라벨(범례 대신) — 두 라벨이 겹치지 않게 y좌표를 함께 계산
+    def last_point(vals):
+        valid = [(i, v) for i, v in enumerate(vals) if v is not None]
+        return valid[-1] if valid else None
+
+    ours_last = last_point(ours_vals)
+    pop_last = last_point(pop_vals)
+    MIN_GAP = 13
+    ours_label_y = y_of(ours_last[1]) if ours_last else None
+    pop_label_y = y_of(pop_last[1]) if pop_last else None
+    if ours_label_y is not None and pop_label_y is not None and abs(ours_label_y - pop_label_y) < MIN_GAP:
+        mid = (ours_label_y + pop_label_y) / 2
+        if ours_label_y <= pop_label_y:
+            ours_label_y, pop_label_y = mid - MIN_GAP / 2, mid + MIN_GAP / 2
+        else:
+            ours_label_y, pop_label_y = mid + MIN_GAP / 2, mid - MIN_GAP / 2
+
+    def end_label(last, color, text, label_y):
+        if last is None:
+            return ""
+        i, _ = last
+        x = x_of(i) + 8
+        y = max(pad_t + 8, min(h - pad_b - 2, label_y))
+        return f'<text x="{x:.1f}" y="{y:.1f}" font-size="10.5" font-weight="700" fill="{color}">{text}</text>'
+
+    labels = end_label(ours_last, CHART_COLOR_OURS, "손병철", (ours_label_y or 0) + 3) + \
+        end_label(pop_last, CHART_COLOR_POP, "전체평균", (pop_label_y or 0) + 3)
+
+    return f"""
+    <div class="trend-panel">
+      <div class="trend-title">{ihtml.escape(title)}</div>
+      <svg viewBox="0 0 {w} {h}" class="trend-svg" role="img" aria-label="{ihtml.escape(title)} 추이 그래프">
+        {gridlines}
+        {pop_line}
+        {ours_line}
+        {labels}
+        {x_labels}
+      </svg>
+    </div>"""
+
+
+def render_trend_section() -> str:
+    months, sb, allp = compute_trainer_trend()
+    if len(months) == 0:
+        return ""
+    sb_win = [sb.loc[m, "승률"] if m in sb.index else None for m in months]
+    sb_place = [sb.loc[m, "복승률"] if m in sb.index else None for m in months]
+    sb_n = [int(sb.loc[m, "출주"]) if m in sb.index else None for m in months]
+    all_win = [allp.loc[m, "승률"] if m in allp.index else None for m in months]
+    all_place = [allp.loc[m, "복승률"] if m in allp.index else None for m in months]
+
+    win_chart = build_trend_svg(months, sb_win, all_win, sb_n, "승률 추이 (%)")
+    place_chart = build_trend_svg(months, sb_place, all_place, sb_n, "복승률(3착 이내) 추이 (%)")
+
+    return f"""
+  <h2>11조(손병철) 개업 이후 성적 추이 — 전체 조교사 평균과 비교</h2>
+  <div class="trend-grid">
+    {win_chart}
+    {place_chart}
+  </div>
+  <div class="legend">
+    ※ 손병철 조교사 데뷔일(2026-07-01) 이후 월별 집계. "전체평균"은 그 달 부산경남에서 뛴
+    모든 말(방문마 제외)을 통째로 풀링한 승률/복승률 — 트레이너별 평균의 평균이 아니라
+    "그 달 아무 말이나 무작위로 골랐을 때" 기준치입니다. 점에 마우스를 올리면 출주 건수가 뜹니다.
+  </div>"""
 
 
 # ---------------------------------------------------------------- 배지/보조 렌더러
@@ -275,6 +427,8 @@ def main():
         for _, r in unscored.iterrows()
     )
 
+    trend_section = render_trend_section()
+
     html = f"""<!doctype html>
 <html lang="ko">
 <head>
@@ -288,6 +442,7 @@ def main():
     --good: #1a7f37; --good-bg: #d4f4dd; --warn: #9a6700; --warn-bg: #fff0e8;
     --bad: #cf222e; --accent-bg: #eef0ff; --accent-ink: #3451b2;
     --accent2-bg: #fff4d6; --accent2-ink: #9a6700;
+    --chart-grid: #e1e0d9; --chart-muted: #898781;
   }}
   @media (prefers-color-scheme: dark) {{
     :root {{
@@ -296,6 +451,7 @@ def main():
       --good: #3fb950; --good-bg: #0f2c1a; --warn: #d29922; --warn-bg: #2d2109;
       --bad: #f85149; --accent-bg: #15213a; --accent-ink: #79a6ff;
       --accent2-bg: #2d2410; --accent2-ink: #e3b341;
+      --chart-grid: #2c2c2a; --chart-muted: #898781;
     }}
   }}
   * {{ box-sizing: border-box; }}
@@ -357,6 +513,11 @@ def main():
   .guide-body li {{ margin: 3px 0; }}
   .guide-note {{ margin-top: 14px; padding: 10px 12px; background: var(--warn-bg); color: var(--warn);
                  border-radius: 8px; font-size: 12.5px; line-height: 1.6; }}
+
+  .trend-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }}
+  .trend-panel {{ background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px 4px; }}
+  .trend-title {{ font-size: 12.5px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }}
+  .trend-svg {{ width: 100%; height: auto; display: block; }}
 </style>
 </head>
 <body>
@@ -410,7 +571,7 @@ def main():
       </div>
     </div>
   </details>
-
+{trend_section}
   <div class="cards-grid">
     {scored_cards}
   </div>
